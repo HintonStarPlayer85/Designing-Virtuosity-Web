@@ -491,3 +491,32 @@
   .feature-project,.work-item,.identity-tile{transition:none!important}
   .digital-rain{display:none}
 }
+
+/* Precision fix: make Chromatic Digital Rain visible without altering page design */
+/*
+  Root cause: each Portfolio section is an opaque stacking context above .digital-rain,
+  so the droplets animate correctly but are painted behind the section backgrounds.
+  This patch lifts only the rain above section backgrounds and keeps all actual content
+  above the rain.
+*/
+.digital-rain{
+  z-index:1!important;
+}
+.portfolio-experience > .wow-featured,
+.portfolio-experience > .work-index-section,
+.portfolio-experience > .identity-archive,
+.portfolio-experience > .design-range{
+  z-index:auto!important;
+}
+.wow-featured > .container,
+.work-index-section > .container,
+.identity-archive > .container,
+.design-range > .container,
+.design-range > .range-marquee{
+  position:relative;
+  z-index:2!important;
+}
+.rain-drop{
+  mix-blend-mode:normal;
+  opacity:var(--o);
+}
