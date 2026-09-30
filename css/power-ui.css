@@ -698,3 +698,14 @@
     min-height:220px!important;
   }
 }
+
+/* High-DPI emblem source — supplied 1536px master */
+.brand-mark{
+  background-image:url("../assets/brand/dv-emblem-hires.png?v=20260929-hidpi")!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+.about-emblem{
+  background-size:contain!important;
+}
