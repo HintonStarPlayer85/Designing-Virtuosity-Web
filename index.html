@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/power-ui.css?v=20260929-4">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -93,7 +93,7 @@
           <p class="kicker">Our Approach</p>
           <h2 class="section-title">Design should solve something.</h2>
         </div>
-        <div class="philosophy-copy">
+        <div class="philosophy-copy manifesto-panel" data-tilt>
           <p>We do not begin with decoration. We begin with purpose.</p>
           <p>Every website, identity, interface, campaign and visual system has a job to do—communicate an idea, guide an action, establish trust, simplify complexity or move a brand forward.</p>
           <p>Designing Virtuosity combines visual design, digital thinking and strategic execution to create work that is not only recognizable, but useful.</p>
@@ -101,17 +101,17 @@
       </div>
 
       <div class="principles" aria-label="Designing Virtuosity design principles">
-        <div class="principle reveal">
+        <div class="principle reveal" data-tilt>
           <span class="principle-number">01</span>
           <h3>Purpose before polish</h3>
           <p>We define what the design must accomplish before deciding what it should look like.</p>
         </div>
-        <div class="principle reveal">
+        <div class="principle reveal" data-tilt>
           <span class="principle-number">02</span>
           <h3>Systems over one-offs</h3>
           <p>The strongest design can expand across websites, print, social media, digital products and future applications without losing its identity.</p>
         </div>
-        <div class="principle reveal">
+        <div class="principle reveal" data-tilt>
           <span class="principle-number">03</span>
           <h3>Experience matters</h3>
           <p>Every interaction communicates something. We design the visual and digital experience around the people expected to use it.</p>
@@ -119,10 +119,10 @@
       </div>
 
       <div class="design-continuum reveal" aria-label="Identity to growth continuum">
-        <span>Identity</span><span class="continuum-arrow">→</span>
-        <span>Presence</span><span class="continuum-arrow">→</span>
-        <span>Experience</span><span class="continuum-arrow">→</span>
-        <span>Growth</span>
+        <span class="continuum-node">Identity</span>
+        <span class="continuum-node">Presence</span>
+        <span class="continuum-node">Experience</span>
+        <span class="continuum-node">Growth</span>
       </div>
     </div>
   </section>
@@ -163,14 +163,22 @@
 </main>
 
 <footer class="site-footer">
+  <div class="footer-aurora" aria-hidden="true"></div>
   <div class="footer-word" aria-hidden="true">VIRTUOSITY</div>
   <div class="container footer-shell">
-    <div class="footer-intro">
-      <div class="footer-brand"><span class="brand-mark" aria-hidden="true"></span><span>Designing Virtuosity</span></div>
-      <p class="footer-meta">Digital Media · Established 2009</p>
-      <p class="footer-statement">Designing visual identities, digital experiences and creative systems built to work.</p>
+    <div class="footer-stage">
+      <div class="footer-identity">
+        <div class="footer-brand"><span class="brand-mark" aria-hidden="true"></span><span>Designing Virtuosity</span></div>
+        <p class="footer-meta">Digital Media · Established 2009</p>
+        <p class="footer-statement">We design how organizations look, operate and show up.</p>
+      </div>
+      <a class="footer-project-card" data-tilt href="contact.html">
+        <span class="eyebrow">Next Project</span>
+        <strong>Have something worth designing?</strong>
+        <span>Tell us what you are building →</span>
+      </a>
     </div>
-    <div class="footer-columns">
+    <div class="footer-nav-grid">
       <div class="footer-column"><h3>Explore</h3><a href="index.html">Home</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio / Case Studies</a><a href="contact.html">Contact</a></div>
       <div class="footer-column"><h3>Capabilities</h3><a href="services.html#brand">Logos &amp; Branding</a><a href="services.html#digital">Websites</a><a href="services.html#ux">Digital Transformation</a><a href="services.html#campaign">Social Marketing &amp; Consulting</a></div>
       <div class="footer-column"><h3>Connect</h3><a href="contact.html">Start a Project</a><a href="contact.html">General Inquiry</a></div>
@@ -179,5 +187,5 @@
   </div>
 </footer>
 <script src="js/main.js"></script>
-</body>
+<script src="js/power-ui.js?v=20260929-4"></script></body>
 </html>
