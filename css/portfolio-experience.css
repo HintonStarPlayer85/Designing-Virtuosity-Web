@@ -807,33 +807,3 @@
 }
 
 
-/* Identity Archive — supplied logo marks only */
-.identity-mark.identity-logo{
-  display:block;
-  width:min(76%,320px);
-  height:auto;
-  aspect-ratio:360 / 230;
-  color:inherit;
-  background-image:url("../assets/identity-archive/identity-logo-sprite.webp");
-  background-repeat:no-repeat;
-  background-size:500% 200%;
-  -webkit-background-clip:border-box;
-  background-clip:border-box;
-  border-radius:14px;
-  box-shadow:0 14px 34px rgba(0,0,0,.18);
-  filter:none;
-}
-.logo-ervins{background-position:0% 0%}
-.logo-hinton{background-position:25% 0%}
-.logo-supported{background-position:50% 0%}
-.logo-nbpa{background-position:75% 0%}
-.logo-saysheeze{background-position:100% 0%}
-.logo-crouell{background-position:0% 100%}
-.logo-fonville{background-position:25% 100%}
-.logo-voice-lily{background-position:50% 100%}
-.logo-martinsville{background-position:75% 100%}
-.logo-awakening{background-position:100% 100%}
-
-@media(max-width:680px){
-  .identity-mark.identity-logo{width:min(72%,300px)}
-}
