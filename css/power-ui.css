@@ -808,10 +808,10 @@
   position:relative;
   display:grid!important;
   place-items:center;
-  width:46px!important;
-  height:46px;
+  width:53px!important;
+  height:53px;
   max-width:none!important;
-  flex:0 0 46px;
+  flex:0 0 53px;
   border:1px solid rgba(255,255,255,.1);
   border-radius:14px;
   background:
@@ -826,8 +826,8 @@
   display:none!important;
 }
 .footer-social-link svg{
-  width:24px;
-  height:24px;
+  width:28px;
+  height:28px;
   overflow:visible;
   filter:drop-shadow(0 0 7px rgba(19,216,238,.15));
   transition:transform .3s var(--dv-spring),filter .3s;
