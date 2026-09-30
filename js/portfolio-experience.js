@@ -4,24 +4,118 @@
   const rain = document.querySelector('.digital-rain');
   const brandColors = ['#13d8ee','#199df0','#ff1188','#8b4cff','#73e52d','#ff9128'];
 
-  // Chromatic rain engine: randomized brand-aligned droplets generated at runtime.
-  if (rain && !reduced) {
-    const fragment = document.createDocumentFragment();
-    const count = Math.min(72, Math.max(42, Math.round(window.innerWidth / 22)));
-    for (let i = 0; i < count; i++) {
-      const drop = document.createElement('span');
-      drop.className = 'rain-drop';
-      drop.style.setProperty('--x', (Math.random() * 100).toFixed(2) + '%');
-      drop.style.setProperty('--s', (2 + Math.random() * 4.5).toFixed(2) + 'px');
-      drop.style.setProperty('--o', (0.08 + Math.random() * 0.21).toFixed(2));
-      drop.style.setProperty('--b', (Math.random() * 0.8).toFixed(2) + 'px');
-      drop.style.setProperty('--d', (7 + Math.random() * 11).toFixed(2) + 's');
-      drop.style.setProperty('--delay', (-Math.random() * 18).toFixed(2) + 's');
-      drop.style.setProperty('--drift', ((Math.random() - .5) * 80).toFixed(1) + 'px');
-      drop.style.setProperty('--c', brandColors[Math.floor(Math.random() * brandColors.length)]);
-      fragment.appendChild(drop);
+  // 5D Chromatic Rain Field: three depth planes + refractive prism droplets + pointer parallax.
+  if (rain && experience && !reduced) {
+    rain.classList.add('five-d-rain');
+    document.body.appendChild(rain);
+
+    const depthConfig = {
+      far:  { count: Math.min(44, Math.max(24, Math.round(window.innerWidth / 34))), size:[1.2,2.6], opacity:[.08,.18], blur:[.4,1.15], duration:[10,18], scale:[.55,.85], z:[-420,-220] },
+      mid:  { count: Math.min(36, Math.max(22, Math.round(window.innerWidth / 42))), size:[2.2,4.8], opacity:[.12,.27], blur:[0,.65],  duration:[8,15],  scale:[.8,1.18],  z:[-130,70] },
+      near: { count: Math.min(24, Math.max(14, Math.round(window.innerWidth / 60))), size:[4.2,8.8], opacity:[.14,.31], blur:[0,.45],  duration:[7,12],  scale:[1.05,1.65], z:[110,320] }
+    };
+
+    const rand = (a,b) => a + Math.random() * (b-a);
+    const makePlane = depth => {
+      const plane = document.createElement('div');
+      plane.className = 'rain-plane rain-plane--' + depth;
+      plane.dataset.depth = depth;
+      rain.appendChild(plane);
+      return plane;
+    };
+
+    const planes = {
+      far: makePlane('far'),
+      mid: makePlane('mid'),
+      near: makePlane('near')
+    };
+
+    Object.entries(depthConfig).forEach(([depth,cfg]) => {
+      const fragment = document.createDocumentFragment();
+      for (let i=0;i<cfg.count;i++) {
+        const drop = document.createElement('span');
+        drop.className = 'rain-drop';
+        drop.style.setProperty('--x', rand(-3,103).toFixed(2) + '%');
+        drop.style.setProperty('--s', rand(cfg.size[0],cfg.size[1]).toFixed(2) + 'px');
+        drop.style.setProperty('--o', rand(cfg.opacity[0],cfg.opacity[1]).toFixed(3));
+        drop.style.setProperty('--b', rand(cfg.blur[0],cfg.blur[1]).toFixed(2) + 'px');
+        drop.style.setProperty('--d', rand(cfg.duration[0],cfg.duration[1]).toFixed(2) + 's');
+        drop.style.setProperty('--delay', (-rand(0,18)).toFixed(2) + 's');
+        drop.style.setProperty('--drift', rand(-95,95).toFixed(1) + 'px');
+        drop.style.setProperty('--scale', rand(cfg.scale[0],cfg.scale[1]).toFixed(2));
+        drop.style.setProperty('--z', rand(cfg.z[0],cfg.z[1]).toFixed(1) + 'px');
+        drop.style.setProperty('--tilt', rand(-8,8).toFixed(1) + 'deg');
+        drop.style.setProperty('--c', brandColors[Math.floor(Math.random()*brandColors.length)]);
+        fragment.appendChild(drop);
+      }
+      planes[depth].appendChild(fragment);
+    });
+
+    // Large refractive droplets occupy the foreground and distort whatever passes behind them.
+    const prismCount = window.innerWidth < 700 ? 4 : 9;
+    for (let i=0;i<prismCount;i++) {
+      const prism = document.createElement('span');
+      prism.className = 'rain-prism';
+      prism.style.setProperty('--x', rand(3,94).toFixed(2) + '%');
+      prism.style.setProperty('--w', rand(22,56).toFixed(1) + 'px');
+      prism.style.setProperty('--h', rand(58,154).toFixed(1) + 'px');
+      prism.style.setProperty('--o', rand(.07,.17).toFixed(3));
+      prism.style.setProperty('--blur', rand(.15,.7).toFixed(2) + 'px');
+      prism.style.setProperty('--hue', rand(-16,16).toFixed(1) + 'deg');
+      prism.style.setProperty('--d', rand(11,19).toFixed(2) + 's');
+      prism.style.setProperty('--delay', (-rand(0,20)).toFixed(2) + 's');
+      prism.style.setProperty('--drift', rand(-125,125).toFixed(1) + 'px');
+      prism.style.setProperty('--c', brandColors[Math.floor(Math.random()*brandColors.length)]);
+      prism.style.setProperty('--c2', brandColors[Math.floor(Math.random()*brandColors.length)]);
+      planes.near.appendChild(prism);
     }
-    rain.appendChild(fragment);
+
+    // Soft depth flares create volumetric color between the rain planes.
+    for (let i=0;i<10;i++) {
+      const flare = document.createElement('span');
+      flare.className = 'rain-depth-flare';
+      flare.style.setProperty('--x', rand(2,96).toFixed(2) + '%');
+      flare.style.setProperty('--y', rand(2,92).toFixed(2) + '%');
+      flare.style.setProperty('--size', rand(90,240).toFixed(1) + 'px');
+      flare.style.setProperty('--blur', rand(18,42).toFixed(1) + 'px');
+      flare.style.setProperty('--o', rand(.025,.075).toFixed(3));
+      flare.style.setProperty('--d', rand(6,13).toFixed(2) + 's');
+      flare.style.setProperty('--delay', (-rand(0,10)).toFixed(2) + 's');
+      flare.style.setProperty('--c', brandColors[Math.floor(Math.random()*brandColors.length)]);
+      rain.appendChild(flare);
+    }
+
+    // Activate only while the Portfolio experience is in the viewport, preserving the locked Hero/CTA/Footer.
+    const updateRainVisibility = () => {
+      const r = experience.getBoundingClientRect();
+      const visible = r.bottom > 0 && r.top < window.innerHeight;
+      rain.classList.toggle('is-active', visible);
+    };
+    updateRainVisibility();
+    window.addEventListener('scroll', updateRainVisibility, {passive:true});
+    window.addEventListener('resize', updateRainVisibility, {passive:true});
+
+    // Pointer movement bends the rain field across three different apparent depths.
+    let tx=0,ty=0,cx=0,cy=0,raf=0;
+    const renderParallax = () => {
+      cx += (tx-cx) * .085;
+      cy += (ty-cy) * .085;
+      rain.style.setProperty('--far-x',(cx*5).toFixed(2)+'px');
+      rain.style.setProperty('--far-y',(cy*3).toFixed(2)+'px');
+      rain.style.setProperty('--mid-x',(cx*12).toFixed(2)+'px');
+      rain.style.setProperty('--mid-y',(cy*7).toFixed(2)+'px');
+      rain.style.setProperty('--near-x',(cx*24).toFixed(2)+'px');
+      rain.style.setProperty('--near-y',(cy*15).toFixed(2)+'px');
+      if (Math.abs(tx-cx)>.002 || Math.abs(ty-cy)>.002) raf=requestAnimationFrame(renderParallax);
+      else raf=0;
+    };
+    window.addEventListener('pointermove', e => {
+      tx=(e.clientX/window.innerWidth-.5)*2;
+      ty=(e.clientY/window.innerHeight-.5)*2;
+      rain.style.setProperty('--pointer-x',(e.clientX/window.innerWidth*100).toFixed(1)+'%');
+      rain.style.setProperty('--pointer-y',(e.clientY/window.innerHeight*100).toFixed(1)+'%');
+      if(!raf) raf=requestAnimationFrame(renderParallax);
+    }, {passive:true});
   }
 
   // Ripple impacts make pointer clicks feel like digital droplets hitting glass.
