@@ -1,0 +1,8 @@
+/* Precision scope: Established 2009 About emblem only. */
+.about-emblem{
+  background-image:url("../assets/brand/dv-emblem-hidpi.webp")!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  image-rendering:auto!important;
+}
