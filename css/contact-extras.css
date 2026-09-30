@@ -107,8 +107,11 @@
   text-transform:uppercase;
 }
 .intelligence-link strong{
-  font:600 clamp(1.4rem,2.2vw,2rem)/1.05 "Space Grotesk",sans-serif;
+  max-width:100%;
+  font:600 clamp(1.12rem,1.6vw,1.55rem)/1.05 "Space Grotesk",sans-serif;
   letter-spacing:-.035em;
+  white-space:normal;
+  overflow-wrap:anywhere;
 }
 .intelligence-link .arrow{
   align-self:flex-end;
