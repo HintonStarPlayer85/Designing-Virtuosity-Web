@@ -786,3 +786,12 @@
   .footer-identity .footer-brand{font-size:clamp(2.35rem,10vw,3.8rem)!important}
   .footer-statement{font-size:clamp(1.9rem,8vw,3.1rem)!important}
 }
+
+/* Precision patch: restore circular DV mark in navigation/footer only */
+.site-header .brand-mark,
+.site-footer .brand-mark{
+  background-image:url("../assets/brand/dv-emblem-hidpi.webp")!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
