@@ -94,7 +94,7 @@
   const modal = document.querySelector('.case-modal');
   const closeBtn = modal?.querySelector('.case-close');
   const title = modal?.querySelector('[data-case-title]');
-  const level = modal?.querySelector('[data-case-level]');
+  const levelFields = [...(modal?.querySelectorAll('[data-case-level]') || [])];
   const discipline = modal?.querySelector('[data-case-discipline]');
   const summary = modal?.querySelector('[data-case-summary]');
   const deliverables = modal?.querySelector('[data-case-deliverables]');
@@ -107,7 +107,7 @@
     if (!modal) return;
     returnFocus = trigger;
     title.textContent = trigger.dataset.caseTitle || '';
-    level.textContent = trigger.dataset.caseLevel || 'Portfolio Artifact';
+    levelFields.forEach(field => field.textContent = trigger.dataset.caseLevel || 'Portfolio Artifact');
     discipline.textContent = trigger.dataset.caseDiscipline || '';
     summary.textContent = trigger.dataset.caseSummary || '';
     deliverables.textContent = trigger.dataset.caseDeliverables || 'Selected project artifacts';
@@ -138,7 +138,8 @@
     returnFocus?.focus?.();
   }
 
-  document.querySelectorAll('[data-case-title]').forEach(trigger => {
+  const caseTriggers = [...document.querySelectorAll('.feature-project[data-case-title], .work-item[data-case-title], .identity-tile[data-case-title]')];
+  caseTriggers.forEach(trigger => {
     trigger.addEventListener('click', () => openCase(trigger));
   });
   closeBtn?.addEventListener('click', closeCase);
@@ -149,7 +150,7 @@
 
   const slug = location.hash.replace('#','');
   if (slug) {
-    const trigger = [...document.querySelectorAll('[data-case-slug]')].find(el => el.dataset.caseSlug === slug);
+    const trigger = caseTriggers.find(el => el.dataset.caseSlug === slug);
     if (trigger) setTimeout(() => openCase(trigger), 120);
   }
 })();
