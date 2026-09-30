@@ -17,7 +17,14 @@
 }
 .logo-ervins{background-position:0% 0%}
 .logo-hinton{background-position:25% 0%}
-.logo-supported{background-position:50% 0%}
+.identity-mark.identity-logo.logo-supported{
+  width:min(62%,240px);
+  aspect-ratio:1 / 1;
+  background-image:url("../assets/identity-archive/supported-counsel.webp?v=20260930-1");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
 .logo-nbpa{background-position:75% 0%}
 .logo-saysheeze{background-position:100% 0%}
 .logo-crouell{background-position:0% 100%}
@@ -28,4 +35,5 @@
 
 @media(max-width:680px){
   .identity-mark.identity-logo{width:min(72%,300px)}
+  .identity-mark.identity-logo.logo-supported{width:min(60%,220px)}
 }
