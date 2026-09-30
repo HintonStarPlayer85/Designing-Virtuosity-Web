@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/power-ui.css?v=20260930-7">
+  <link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/power-ui.css?v=20260930-7"><link rel="stylesheet" href="css/contact-extras.css?v=20260930-1">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -17,7 +17,7 @@
   <section class="page-hero"><div class="container"><p class="kicker reveal">Contact Us</p><h1 class="display reveal">Have something<br><span class="gradient-word">worth designing?</span></h1><p class="lede reveal">Tell us what you are building, where the project stands, and what the design needs to accomplish.</p></div></section>
   <section class="section"><div class="container contact-grid">
     <aside class="contact-aside reveal"><p class="kicker">Project Inquiry</p><h2 class="section-title">Start with the problem.</h2><p>Strong design begins with context. The intake is structured to capture the decision, audience, environment and constraints before visual direction begins.</p><div class="contact-meta"><div><span>Studio</span>Designing Virtuosity Digital Media</div><div><span>Established</span>2009</div><div><span>Project Types</span>Brand · Digital · UI/UX · Corporate · Campaign · Information</div></div></aside>
-    <form class="form-card reveal" id="project-form">
+    <form class="form-card reveal" id="project-form"><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;pointer-events:none">
       <div class="form-section"><span class="form-label">What are we creating?</span><div class="option-grid">
         <div class="option-chip"><input type="radio" name="project_type" id="brand" value="Brand Identity" required><label for="brand">Brand Identity</label></div>
         <div class="option-chip"><input type="radio" name="project_type" id="website" value="Website"><label for="website">Website</label></div>
@@ -30,9 +30,27 @@
       <div class="form-section"><div class="field-grid"><div class="field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" required></div><div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field"><label for="organization">Organization</label><input id="organization" name="organization" autocomplete="organization"></div><div class="field"><label for="website-url">Website</label><input id="website-url" name="website" type="url" placeholder="https://"></div><div class="field full"><label for="brief">Tell us about the project</label><textarea id="brief" name="brief" required placeholder="What are you building, and what should the design help accomplish?"></textarea></div></div></div>
       <div class="form-section"><div class="field-grid"><div class="field"><label for="budget">Budget Range</label><select id="budget" name="budget"><option value="">Select a range</option><option>Under $2,500</option><option>$2,500–$5,000</option><option>$5,000–$10,000</option><option>$10,000–$25,000</option><option>$25,000+</option></select></div><div class="field"><label for="timeline">Desired Timeline</label><select id="timeline" name="timeline"><option value="">Select a timeline</option><option>2–4 weeks</option><option>1–2 months</option><option>2–4 months</option><option>Flexible / Exploratory</option></select></div><div class="field full"><label for="source">How did you find us?</label><input id="source" name="source"></div></div></div>
       <button class="btn btn-dark" type="submit">Send Project Inquiry <span class="btn-arrow">→</span></button>
-      <p class="form-note">Prototype note: the interface and validation are complete, but the form is intentionally not connected to an email endpoint yet. That will be configured to match your GoDaddy hosting environment before launch.</p><div class="form-status"></div>
+      <p class="form-note">Project inquiries are sent directly to the Designing Virtuosity studio.</p><div class="form-status" aria-live="polite"></div>
     </form>
   </div></section>
+
+  <section class="strategic-intelligence" aria-labelledby="strategic-intelligence-title">
+    <div class="container">
+      <div class="intelligence-card reveal">
+        <div>
+          <p class="kicker">Looking for Strategic Intelligence?</p>
+          <h2 id="strategic-intelligence-title">Strategy lives next door.</h2>
+          <p>Visit <strong>Hinton Consulting LLC</strong>, a Designing Virtuosity portfolio venture, for strategic intelligence, organizational consulting, behavioral healthcare consulting and business infrastructure support.</p>
+        </div>
+        <a class="intelligence-link" href="https://www.hintonconsultingllc.com" target="_blank" rel="noopener">
+          <span>Portfolio Venture</span>
+          <strong>HintonConsultingLLC.com</strong>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
 </main>
 <footer class="site-footer">
   <div class="footer-aurora" aria-hidden="true"></div>
@@ -60,5 +78,5 @@
     <div class="footer-bottom"><span>© <span data-year></span> Designing Virtuosity Digital Media. All rights reserved.</span><span>Established 2009 · North Carolina</span></div>
   </div>
 </footer>
-<script src="js/main.js"></script><script src="js/contact.js"></script>
+<script src="js/main.js"></script><script src="js/contact.js?v=20260930-1"></script>
 <script src="js/power-ui.js?v=20260929-6"></script></body></html>
