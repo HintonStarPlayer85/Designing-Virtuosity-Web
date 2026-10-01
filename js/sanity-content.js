@@ -622,7 +622,11 @@
     node.dataset.caseDeliverables = Array.isArray(project.deliverables)
       ? project.deliverables.join(' · ')
       : '';
-    node.dataset.caseTreatment = projectTreatment(project);
+
+    node.dataset.caseChallenge = project.challenge || '';
+    node.dataset.caseApproach = project.strategy || '';
+    node.dataset.caseSolution = project.designSystem || '';
+    node.dataset.caseTreatment = project.portfolioTreatment || projectTreatment(project);
 
     if (project.website) node.dataset.caseUrl = project.website;
     else delete node.dataset.caseUrl;
