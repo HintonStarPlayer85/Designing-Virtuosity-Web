@@ -74,6 +74,51 @@
     });
   };
 
+  const setHeadingPreservingBreak = (node, value) => {
+    if (!node || !value) return;
+
+    const br = node.querySelector('br');
+    if (!br) {
+      node.textContent = value;
+      return;
+    }
+
+    let firstLine = '';
+    for (const child of node.childNodes) {
+      if (child === br) break;
+      firstLine += child.textContent || '';
+    }
+
+    const firstLineWords = firstLine.trim().split(/\s+/).filter(Boolean).length || 1;
+    const words = String(value).trim().split(/\s+/).filter(Boolean);
+
+    if (words.length <= 1) {
+      node.textContent = value;
+      return;
+    }
+
+    const splitAt = Math.min(firstLineWords, words.length - 1);
+    node.replaceChildren(
+      document.createTextNode(words.slice(0, splitAt).join(' ')),
+      document.createElement('br'),
+      document.createTextNode(words.slice(splitAt).join(' '))
+    );
+  };
+
+  const setDisplayHeading = (node, top, accent) => {
+    if (!node) return;
+
+    const accentNode = node.querySelector('.gradient-word') || document.createElement('span');
+    accentNode.classList.add('gradient-word');
+    if (accent) accentNode.textContent = accent;
+
+    node.replaceChildren(
+      document.createTextNode(top || ''),
+      document.createElement('br'),
+      accentNode
+    );
+  };
+
   const setMeta = (name, contentValue) => {
     if (!contentValue) return;
     let node = document.querySelector(`meta[name="${name}"]`);
@@ -714,35 +759,34 @@
     const hero = document.querySelector('.page-hero');
     if (hero) {
       text(hero.querySelector('.kicker'), page.heroEyebrow);
-      text(hero.querySelector('h1.display > :first-child'), page.heroHeadingTop);
-      text(hero.querySelector('h1.display .gradient-word'), page.heroHeadingAccent);
+      setDisplayHeading(hero.querySelector('h1.display'), page.heroHeadingTop, page.heroHeadingAccent);
       text(hero.querySelector('.lede'), page.heroIntro);
     }
 
     const featured = document.querySelector('.wow-featured');
     if (featured) {
       text(featured.querySelector('.portfolio-intro-grid .kicker'), page.featuredEyebrow);
-      text(featured.querySelector('.portfolio-intro-grid .section-title'), page.featuredHeading);
+      setHeadingPreservingBreak(featured.querySelector('.portfolio-intro-grid .section-title'), page.featuredHeading);
       text(featured.querySelector('.portfolio-intro-grid .lede'), page.featuredIntro);
     }
 
     const index = document.querySelector('.work-index-section');
     if (index) {
       text(index.querySelector('.work-index-head .kicker'), page.indexEyebrow);
-      text(index.querySelector('.work-index-head .section-title'), page.indexHeading);
+      setHeadingPreservingBreak(index.querySelector('.work-index-head .section-title'), page.indexHeading);
       text(index.querySelector('.work-index-head .lede'), page.indexIntro);
     }
 
     const identity = document.querySelector('.identity-archive');
     if (identity) {
       text(identity.querySelector('.identity-head .kicker'), page.identityEyebrow);
-      text(identity.querySelector('.identity-head .section-title'), page.identityHeading);
+      setHeadingPreservingBreak(identity.querySelector('.identity-head .section-title'), page.identityHeading);
       text(identity.querySelector('.identity-head .lede'), page.identityIntro);
     }
 
     const range = document.querySelector('.design-range');
     if (range) {
-      text(range.querySelector('.range-head .section-title'), page.rangeHeading);
+      setHeadingPreservingBreak(range.querySelector('.range-head .section-title'), page.rangeHeading);
       text(range.querySelector('.range-head p'), page.rangeIntro);
     }
 
