@@ -4,12 +4,8 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 import {structure} from './structure'
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'rx0hc1vo'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
-
-if (!projectId) {
-  throw new Error('Missing SANITY_STUDIO_PROJECT_ID. Copy .env.example to .env and add the Sanity project ID.')
-}
 
 export default defineConfig({
   name: 'designing-virtuosity',

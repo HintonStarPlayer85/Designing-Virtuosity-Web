@@ -13,8 +13,9 @@ jobs:
       run:
         working-directory: studio
     env:
-      SANITY_STUDIO_PROJECT_ID: ${{ vars.SANITY_STUDIO_PROJECT_ID }}
-      SANITY_STUDIO_DATASET: ${{ vars.SANITY_STUDIO_DATASET }}
+      SANITY_STUDIO_PROJECT_ID: rx0hc1vo
+      SANITY_STUDIO_DATASET: production
+      SANITY_STUDIO_HOSTNAME: designing-virtuosity
       SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
     steps:
       - name: Check out repository
@@ -24,11 +25,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.12'
-          cache: npm
-          cache-dependency-path: studio/package-lock.json
 
       - name: Install Studio dependencies
         run: npm install
 
       - name: Deploy Studio and schema
-        run: npx sanity@latest deploy --url "${{ vars.SANITY_STUDIO_HOSTNAME }}" --yes --schema-required
+        run: npx sanity@latest deploy --url "$SANITY_STUDIO_HOSTNAME" --yes --schema-required

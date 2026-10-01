@@ -2,19 +2,24 @@
 
 This directory contains the Sanity Studio for DesigningVirtuosity.com.
 
+## Connected Sanity project
+
+- Project ID: `rx0hc1vo`
+- Dataset: `production`
+- Preferred Studio hostname: `designing-virtuosity.sanity.studio`
+
+The project ID is public configuration, not a secret. Authentication/write tokens must never be committed.
+
 ## Architecture
 
 The public website remains the existing static HTML/CSS/JavaScript site. This Studio is a separate editing layer backed by Sanity Content Lake. The public site should not be switched to Sanity until content parity has been reviewed.
 
-## First-time setup
+## Local setup
 
-1. Create or open the Designing Virtuosity project in Sanity.
-2. Copy `.env.example` to `.env`.
-3. Set:
-   - `SANITY_STUDIO_PROJECT_ID`
-   - `SANITY_STUDIO_DATASET=production`
-4. Run `npm install`.
-5. Run `npm run dev`.
+1. Run `npm install` inside this directory.
+2. Run `npm run dev`.
+
+The Studio already defaults to project `rx0hc1vo` and dataset `production`, so a local `.env` is optional unless an environment needs to override them.
 
 Current Sanity Studio requires Node.js 22.12 or later.
 
@@ -45,10 +50,7 @@ Never commit a Sanity API token. The public website should not contain a write t
 
 ## Deployment
 
-Sanity-hosted Studio is preferred initially. A manual GitHub Actions workflow is included and can be activated after repository variables/secrets are configured.
-
-Recommended Studio hostname:
-`designing-virtuosity.sanity.studio`
+Sanity-hosted Studio is preferred initially. A manual GitHub Actions workflow is included. It already knows the project ID, dataset, and preferred hostname; it only requires the repository secret `SANITY_AUTH_TOKEN` before the workflow can deploy.
 
 ## Production migration rule
 
