@@ -99,6 +99,10 @@ const faq = (page.faq || []).map((item) => {
 })
 
 const pageChanges = {
+  heroHeading: 'One studio. Six design systems.',
+  differenceHeading: 'Built beyond the deliverable.',
+  faqHeading: 'A few things worth knowing.',
+
   heroClientValue:
     'From identity and web to UI/UX, corporate communications and campaigns, we help organizations clarify what they need to say, strengthen how they show up, and build design systems that can scale with the work.',
 
