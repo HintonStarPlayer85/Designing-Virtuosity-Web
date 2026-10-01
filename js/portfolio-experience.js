@@ -214,7 +214,12 @@
   const discipline = modal?.querySelector('[data-case-discipline]');
   const summary = modal?.querySelector('[data-case-summary]');
   const deliverables = modal?.querySelector('[data-case-deliverables]');
-  const treatment = modal?.querySelector('[data-case-treatment]');
+  const challenge = modal?.querySelector('[data-case-challenge]');
+  const approach = modal?.querySelector('[data-case-approach]');
+  const solution = modal?.querySelector('[data-case-solution]');
+  const challengeBlock = modal?.querySelector('[data-case-block="challenge"]');
+  const approachBlock = modal?.querySelector('[data-case-block="approach"]');
+  const solutionBlock = modal?.querySelector('[data-case-block="solution"]');
   const link = modal?.querySelector('.case-link');
   const top = modal?.querySelector('.case-top');
   let returnFocus = null;
@@ -227,7 +232,22 @@
     discipline.textContent = trigger.dataset.caseDiscipline || '';
     summary.textContent = trigger.dataset.caseSummary || '';
     deliverables.textContent = trigger.dataset.caseDeliverables || 'Selected project artifacts';
-    treatment.textContent = trigger.dataset.caseTreatment || 'Detailed case-study media will be added when the final artifacts are supplied.';
+
+    const setStoryBlock = (field, block, value) => {
+      const copy = String(value || '').trim();
+      if (field) field.textContent = copy;
+      if (block) block.hidden = !copy;
+    };
+
+    const fallbackTreatment = trigger.dataset.caseTreatment || '';
+    setStoryBlock(challenge, challengeBlock, trigger.dataset.caseChallenge);
+    setStoryBlock(approach, approachBlock, trigger.dataset.caseApproach);
+    setStoryBlock(
+      solution,
+      solutionBlock,
+      trigger.dataset.caseSolution || fallbackTreatment || 'Detailed project solution information will be added with the final approved case-study assets.'
+    );
+
     const accent = trigger.dataset.caseAccent || '#13d8ee';
     top?.style.setProperty('--ca', accent);
     if (trigger.dataset.caseUrl) {
