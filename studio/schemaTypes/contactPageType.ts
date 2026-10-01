@@ -1,0 +1,50 @@
+import {defineArrayMember, defineField, defineType} from 'sanity'
+
+export const contactPageType = defineType({
+  name: 'contactPage',
+  title: 'Contact Page',
+  type: 'document',
+  groups: [
+    {name: 'hero', title: 'Hero'},
+    {name: 'inquiry', title: 'Project Inquiry'},
+    {name: 'form', title: 'Form Options'},
+    {name: 'referral', title: 'Strategic Intelligence'},
+    {name: 'seo', title: 'SEO'},
+  ],
+  fields: [
+    defineField({name: 'heroEyebrow', title: 'Hero Eyebrow', type: 'string', group: 'hero'}),
+    defineField({name: 'heroHeading', title: 'Hero Heading', type: 'string', group: 'hero'}),
+    defineField({name: 'heroIntro', title: 'Hero Intro', type: 'text', rows: 4, group: 'hero'}),
+    defineField({name: 'inquiryEyebrow', title: 'Inquiry Eyebrow', type: 'string', group: 'inquiry'}),
+    defineField({name: 'inquiryHeading', title: 'Inquiry Heading', type: 'string', group: 'inquiry'}),
+    defineField({
+      name: 'inquiryCopy',
+      title: 'Inquiry Copy',
+      type: 'text',
+      rows: 5,
+      group: 'inquiry',
+      description: 'Set expectations and help qualified clients decide whether to submit.',
+    }),
+    defineField({name: 'studioLabel', title: 'Studio Label', type: 'string', group: 'inquiry'}),
+    defineField({name: 'projectTypes', title: 'Project Types', type: 'array', group: 'form', of: [defineArrayMember({type: 'string'})]}),
+    defineField({name: 'budgetOptions', title: 'Budget Options', type: 'array', group: 'form', of: [defineArrayMember({type: 'string'})]}),
+    defineField({name: 'timelineOptions', title: 'Timeline Options', type: 'array', group: 'form', of: [defineArrayMember({type: 'string'})]}),
+    defineField({name: 'sourceOptions', title: 'How They Found Us', type: 'array', group: 'form', of: [defineArrayMember({type: 'string'})]}),
+    defineField({
+      name: 'successMessage',
+      title: 'Form Success Message',
+      type: 'string',
+      group: 'form',
+      initialValue: 'Message sent successfully. Someone will reach out to you within 24 hours.',
+    }),
+    defineField({name: 'referralEyebrow', title: 'Referral Eyebrow', type: 'string', group: 'referral'}),
+    defineField({name: 'referralHeading', title: 'Referral Heading', type: 'string', group: 'referral'}),
+    defineField({name: 'referralCopy', title: 'Referral Copy', type: 'text', rows: 4, group: 'referral'}),
+    defineField({name: 'referralLabel', title: 'Referral Link Label', type: 'string', group: 'referral'}),
+    defineField({name: 'referralUrl', title: 'Referral URL', type: 'url', group: 'referral'}),
+    defineField({name: 'seo', title: 'SEO', type: 'seoFields', group: 'seo'}),
+  ],
+  preview: {
+    prepare: () => ({title: 'Contact Page'}),
+  },
+})

@@ -1,0 +1,24 @@
+{
+  "name": "designing-virtuosity-studio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy:schema": "sanity schema deploy"
+  },
+  "dependencies": {
+    "@sanity/vision": "^6.16.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sanity": "^6.16.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "typescript": "^5.9.2"
+  }
+}

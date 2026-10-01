@@ -1,0 +1,138 @@
+import {defineArrayMember, defineField, defineType} from 'sanity'
+
+export const portfolioProjectType = defineType({
+  name: 'portfolioProject',
+  title: 'Portfolio Project',
+  type: 'document',
+  groups: [
+    {name: 'identity', title: 'Project'},
+    {name: 'story', title: 'Case Study'},
+    {name: 'media', title: 'Media'},
+    {name: 'publishing', title: 'Publishing'},
+    {name: 'seo', title: 'SEO'},
+  ],
+  fields: [
+    defineField({name: 'title', title: 'Project Title', type: 'string', group: 'identity', validation: (Rule) => Rule.required()}),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {source: 'title', maxLength: 96},
+      group: 'identity',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({name: 'client', title: 'Client', type: 'reference', to: [{type: 'client'}], group: 'identity'}),
+    defineField({name: 'clientNameOverride', title: 'Client Name Override', type: 'string', group: 'identity'}),
+    defineField({
+      name: 'discipline',
+      title: 'Discipline',
+      type: 'string',
+      group: 'identity',
+      options: {
+        list: [
+          'Web + Digital',
+          'Corporate Design',
+          'Campaign Creative',
+          'Brand Identity',
+          'UI / UX Design',
+          'Information Design',
+        ],
+      },
+    }),
+    defineField({
+      name: 'portfolioLevel',
+      title: 'Portfolio Level',
+      type: 'string',
+      group: 'identity',
+      options: {
+        list: [
+          {title: 'Featured Project', value: 'featured'},
+          {title: 'Case Study', value: 'caseStudy'},
+          {title: 'Portfolio Artifact', value: 'artifact'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'artifact',
+    }),
+    defineField({
+      name: 'summary',
+      title: 'Client-Facing Summary',
+      type: 'text',
+      rows: 4,
+      group: 'story',
+      description: 'Describe the work in terms a prospective buyer can immediately understand.',
+    }),
+    defineField({name: 'challenge', title: 'Challenge', type: 'text', rows: 5, group: 'story'}),
+    defineField({name: 'strategy', title: 'Strategic Reasoning', type: 'text', rows: 6, group: 'story'}),
+    defineField({name: 'designSystem', title: 'System / Solution', type: 'text', rows: 6, group: 'story'}),
+    defineField({
+      name: 'deliverables',
+      title: 'Deliverables',
+      type: 'array',
+      group: 'story',
+      of: [defineArrayMember({type: 'string'})],
+    }),
+    defineField({
+      name: 'outcomes',
+      title: 'Outcome / Value Delivered',
+      type: 'array',
+      group: 'story',
+      of: [defineArrayMember({type: 'string'})],
+    }),
+    defineField({
+      name: 'metrics',
+      title: 'Documented Metrics',
+      type: 'array',
+      group: 'story',
+      description: 'Only use metrics that can be substantiated.',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({name: 'label', title: 'Metric', type: 'string'}),
+            defineField({name: 'value', title: 'Value', type: 'string'}),
+          ],
+          preview: {select: {title: 'value', subtitle: 'label'}},
+        }),
+      ],
+    }),
+    defineField({name: 'website', title: 'Project / Live Website URL', type: 'url', group: 'identity'}),
+    defineField({name: 'coverImage', title: 'Cover Image', type: 'image', options: {hotspot: true}, group: 'media'}),
+    defineField({
+      name: 'gallery',
+      title: 'Project Gallery',
+      type: 'array',
+      group: 'media',
+      of: [
+        defineArrayMember({
+          type: 'image',
+          options: {hotspot: true},
+          fields: [defineField({name: 'alt', title: 'Alt Text', type: 'string'})],
+        }),
+      ],
+    }),
+    defineField({name: 'featured', title: 'Feature on Portfolio Page', type: 'boolean', initialValue: false, group: 'publishing'}),
+    defineField({name: 'featuredOrder', title: 'Featured Order', type: 'number', group: 'publishing'}),
+    defineField({name: 'portfolioOrder', title: 'Portfolio Index Order', type: 'number', group: 'publishing'}),
+    defineField({name: 'publishedAt', title: 'Published Date', type: 'datetime', group: 'publishing'}),
+    defineField({name: 'seo', title: 'SEO', type: 'seoFields', group: 'seo'}),
+  ],
+  orderings: [
+    {title: 'Portfolio Order', name: 'portfolioOrder', by: [{field: 'portfolioOrder', direction: 'asc'}]},
+    {title: 'Featured Order', name: 'featuredOrder', by: [{field: 'featuredOrder', direction: 'asc'}]},
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      client: 'client.name',
+      clientOverride: 'clientNameOverride',
+      media: 'coverImage',
+      discipline: 'discipline',
+    },
+    prepare: ({title, client, clientOverride, media, discipline}) => ({
+      title,
+      subtitle: [clientOverride || client, discipline].filter(Boolean).join(' · '),
+      media,
+    }),
+  },
+})
