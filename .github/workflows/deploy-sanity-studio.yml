@@ -35,5 +35,17 @@ jobs:
       - name: Install Studio dependencies
         run: npm install
 
+      - name: Allow website origins to read published content
+        shell: bash
+        run: |
+          set -euo pipefail
+          for origin in "https://designingvirtuosity.com" "https://www.designingvirtuosity.com"; do
+            if npx sanity@latest cors list --project-id "$SANITY_STUDIO_PROJECT_ID" | grep -Fq "$origin"; then
+              echo "$origin is already allowed."
+            else
+              npx sanity@latest cors add "$origin" --project-id "$SANITY_STUDIO_PROJECT_ID" --yes
+            fi
+          done
+
       - name: Deploy Studio and schema
         run: npx sanity@latest deploy --url "$SANITY_STUDIO_HOSTNAME" --yes --schema-required
