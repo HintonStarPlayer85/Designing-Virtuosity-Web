@@ -1,0 +1,31 @@
+name: Complete Supported Counsel Fix
+
+on:
+  push:
+    paths:
+      - "assets/identity-archive/.supported-fix-trigger-2"
+
+permissions:
+  contents: write
+
+jobs:
+  complete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble logo
+        run: |
+          cat assets/identity-archive/.supported-fix/part*.b64 | tr -d '\n\r ' | base64 -d > assets/identity-archive/supported-counsel.webp
+          test -s assets/identity-archive/supported-counsel.webp
+      - name: Clean and commit
+        run: |
+          rm -rf assets/identity-archive/.supported-fix
+          rm -f assets/identity-archive/.supported-fix-trigger
+          rm -f assets/identity-archive/.supported-fix-trigger-2
+          rm -f .github/workflows/fix-supported-counsel-logo.yml
+          rm -f .github/workflows/complete-supported-counsel-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix Supported Counsel Identity Archive logo"
+          git push
