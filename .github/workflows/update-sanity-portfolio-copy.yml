@@ -2,11 +2,6 @@ name: Update Sanity Portfolio Conversion Copy
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "studio/.update-portfolio-copy-trigger"
 
 permissions:
   contents: read
