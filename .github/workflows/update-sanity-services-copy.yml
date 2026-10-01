@@ -1,0 +1,38 @@
+name: Update Sanity Services Conversion Copy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "studio/.update-services-copy-trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studio
+    env:
+      SANITY_STUDIO_PROJECT_ID: rx0hc1vo
+      SANITY_STUDIO_DATASET: production
+      SANITY_CONTENT_TOKEN: ${{ secrets.SANITY_CONTENT_TOKEN }}
+      SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12'
+
+      - name: Install Studio dependencies
+        run: npm install
+
+      - name: Audit and update Sanity services copy
+        run: node scripts/update-services-conversion-copy.mjs

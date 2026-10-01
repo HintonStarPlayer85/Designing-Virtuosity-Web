@@ -27,6 +27,7 @@ export const servicesPageType = defineType({
 
     defineField({name: 'processEyebrow', title: 'Process Eyebrow', type: 'string', group: 'process'}),
     defineField({name: 'processHeading', title: 'Process Heading', type: 'string', group: 'process'}),
+    defineField({name: 'processIntro', title: 'Process Supporting Copy', type: 'text', rows: 4, group: 'process'}),
     defineField({
       name: 'processSteps',
       title: 'Process Steps',
@@ -58,6 +59,7 @@ export const servicesPageType = defineType({
 
     defineField({name: 'differenceEyebrow', title: 'Section Eyebrow', type: 'string', group: 'difference'}),
     defineField({name: 'differenceHeading', title: 'Section Heading', type: 'string', group: 'difference'}),
+    defineField({name: 'differenceIntro', title: 'The Difference Supporting Copy', type: 'text', rows: 4, group: 'difference'}),
     defineField({
       name: 'differenceCards',
       title: 'Difference Cards',
@@ -78,6 +80,7 @@ export const servicesPageType = defineType({
 
     defineField({name: 'faqEyebrow', title: 'FAQ Eyebrow', type: 'string', group: 'faq'}),
     defineField({name: 'faqHeading', title: 'FAQ Heading', type: 'string', group: 'faq'}),
+    defineField({name: 'faqIntro', title: 'FAQ Supporting Copy', type: 'text', rows: 4, group: 'faq'}),
     defineField({
       name: 'faq',
       title: 'Questions & Answers',
@@ -95,7 +98,8 @@ export const servicesPageType = defineType({
       ],
     }),
 
-    defineField({name: 'closingMessage', title: 'Closing Conversion Message', type: 'text', rows: 4, group: 'conversion'}),
+    defineField({name: 'closingMessage', title: 'Closing Conversion Message', type: 'string', group: 'conversion'}),
+    defineField({name: 'closingBody', title: 'Closing Supporting Copy', type: 'text', rows: 4, group: 'conversion'}),
     defineField({name: 'closingCta', title: 'Closing CTA', type: 'cta', group: 'conversion'}),
     defineField({name: 'seo', title: 'SEO', type: 'seoFields', group: 'seo'}),
   ],
