@@ -36,6 +36,7 @@ export const portfolioPageType = defineType({
     defineField({name: 'rangeIntro', title: 'Design Range Supporting Copy', type: 'text', rows: 4, group: 'range'}),
 
     defineField({name: 'closingHeading', title: 'Closing CTA Heading', type: 'string', group: 'conversion'}),
+    defineField({name: 'closingBody', title: 'Closing CTA Supporting Copy', type: 'text', rows: 4, group: 'conversion'}),
     defineField({name: 'closingCta', title: 'Closing CTA', type: 'cta', group: 'conversion'}),
     defineField({name: 'seo', title: 'SEO', type: 'seoFields', group: 'seo'}),
   ],
