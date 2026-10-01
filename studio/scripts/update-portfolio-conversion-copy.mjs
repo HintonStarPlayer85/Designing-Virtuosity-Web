@@ -32,6 +32,10 @@ const parity = {
 }
 
 for (const [field, expected] of Object.entries(parity)) {
+  // The original static Design Range section has no kicker, so the first migration
+  // could not discover rangeHeading. Treat that one missing field as a known
+  // migration gap and populate it below; all other brand anchors must match.
+  if (field === 'rangeHeading' && !page[field]) continue
   if (canonical(page[field]) !== canonical(expected)) {
     throw new Error(`Parity check failed for ${field}. Expected "${expected}", found "${page[field]}".`)
   }
