@@ -819,6 +819,173 @@
     }
   };
 
+
+  const replaceMetaValue = (node, value) => {
+    if (!node || value === undefined || value === null || value === '') return;
+    const label = node.querySelector('span');
+    if (!label) {
+      node.textContent = value;
+      return;
+    }
+    node.replaceChildren(label, document.createTextNode(String(value)));
+  };
+
+  const optionId = (value, index) => {
+    const slug = String(value || '')
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    return `project-type-${slug || index + 1}`;
+  };
+
+  const applyProjectTypeOptions = (items) => {
+    if (!Array.isArray(items) || !items.length) return;
+    const grid = document.querySelector('#project-form .option-grid');
+    if (!grid) return;
+
+    grid.replaceChildren();
+    items.forEach((label, index) => {
+      const chip = document.createElement('div');
+      chip.className = 'option-chip';
+
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'project_type';
+      input.id = optionId(label, index);
+      input.value = label;
+      if (index === 0) input.required = true;
+
+      const labelNode = document.createElement('label');
+      labelNode.htmlFor = input.id;
+      labelNode.textContent = label;
+
+      chip.append(input, labelNode);
+      grid.append(chip);
+    });
+  };
+
+  const replaceSelectOptions = (select, items) => {
+    if (!select || !Array.isArray(items) || !items.length) return;
+
+    const placeholder = select.querySelector('option[value=""]')?.textContent || 'Select an option';
+    select.replaceChildren();
+
+    const first = document.createElement('option');
+    first.value = '';
+    first.textContent = placeholder;
+    select.append(first);
+
+    items.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item;
+      option.textContent = item;
+      select.append(option);
+    });
+  };
+
+  const applySourceOptions = (items) => {
+    if (!Array.isArray(items) || !items.length) return;
+    const input = document.querySelector('#project-form input[name="source"]');
+    if (!input) return;
+
+    let list = document.querySelector('#dv-source-options');
+    if (!list) {
+      list = document.createElement('datalist');
+      list.id = 'dv-source-options';
+      document.body.append(list);
+    }
+
+    list.replaceChildren();
+    items.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item;
+      list.append(option);
+    });
+    input.setAttribute('list', list.id);
+  };
+
+  const applyFormFields = (fields) => {
+    if (!Array.isArray(fields)) return;
+
+    fields.forEach((field) => {
+      if (!field?.name || field.name === 'project_type') return;
+
+      const control = document.querySelector(
+        `#project-form [name="${CSS.escape(field.name)}"]`
+      );
+      if (!control) return;
+
+      const id = control.id;
+      if (id) text(document.querySelector(`label[for="${CSS.escape(id)}"]`), field.label);
+
+      if ('placeholder' in control && field.placeholder !== undefined && field.placeholder !== null) {
+        control.placeholder = field.placeholder;
+      }
+
+      // Required-state changes are allowed only for the existing visible fields.
+      // Field names, input types and endpoint/payload mechanics remain code-controlled.
+      if (typeof field.required === 'boolean') control.required = field.required;
+    });
+  };
+
+  const applyContact = (page) => {
+    if (!page) return;
+
+    const hero = document.querySelector('.page-hero');
+    if (hero) {
+      text(hero.querySelector('.kicker'), page.heroEyebrow);
+      setDisplayHeading(hero.querySelector('h1.display'), page.heroHeadingTop, page.heroHeadingAccent);
+      text(hero.querySelector('.lede'), page.heroIntro);
+    }
+
+    const inquiry = document.querySelector('.contact-aside');
+    if (inquiry) {
+      text(inquiry.querySelector('.kicker'), page.inquiryEyebrow);
+      text(inquiry.querySelector('.section-title'), page.inquiryHeading);
+      text(inquiry.querySelector(':scope > p:not(.kicker)'), page.inquiryCopy);
+
+      const meta = [...inquiry.querySelectorAll('.contact-meta > div')];
+      replaceMetaValue(meta[0], page.studioLabel);
+      replaceMetaValue(meta[1], page.establishedLabel);
+      replaceMetaValue(meta[2], page.projectTypesSummary);
+    }
+
+    applyProjectTypeOptions(page.projectTypes);
+    applyFormFields(page.formFields);
+    replaceSelectOptions(document.querySelector('#budget'), page.budgetOptions);
+    replaceSelectOptions(document.querySelector('#timeline'), page.timelineOptions);
+    applySourceOptions(page.sourceOptions);
+
+    const form = document.querySelector('#project-form');
+    if (form) {
+      const submit = form.querySelector('button[type="submit"]');
+      if (submit && page.submitLabel) {
+        const arrow = submit.querySelector('.btn-arrow');
+        if (arrow) submit.replaceChildren(document.createTextNode(`${page.submitLabel} `), arrow);
+        else submit.textContent = page.submitLabel;
+      }
+
+      text(form.querySelector('.form-note'), page.formNote);
+
+      if (page.successMessage) form.dataset.successMessage = page.successMessage;
+      if (page.errorMessage) form.dataset.errorMessage = page.errorMessage;
+    }
+
+    const referral = document.querySelector('.strategic-intelligence');
+    if (referral) {
+      text(referral.querySelector('.kicker'), page.referralEyebrow);
+      text(referral.querySelector('h2'), page.referralHeading);
+      text(referral.querySelector('.intelligence-card > div > p:not(.kicker)'), page.referralCopy);
+
+      const link = referral.querySelector('.intelligence-link');
+      if (link) {
+        text(link.querySelector('strong'), page.referralLabel);
+        href(link, page.referralUrl);
+      }
+    }
+  };
+
   const loadContent = async () => {
     const query = pageId === 'servicesPage'
       ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "servicesPage"][0]{..., selectedClients[]->{name,legacyLogoPath,displayOrder}}, "services": *[_type == "service"] | order(displayOrder asc){title,slug,shortDescription,valuePromise,whatWeBuild,deliverables,displayOrder}}`
@@ -855,6 +1022,7 @@
       if (pageId === 'homePage') applyHome(payload.result.page);
       if (pageId === 'servicesPage') applyServices(payload.result.page, payload.result.services);
       if (pageId === 'portfolioPage') applyPortfolio(payload.result.page, payload.result.projects, payload.result.identities);
+      if (pageId === 'contactPage') applyContact(payload.result.page);
 
       document.documentElement.dataset.cms = 'sanity';
       window.dispatchEvent(new CustomEvent('dv:content-ready', {
