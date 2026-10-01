@@ -8,6 +8,7 @@ export const siteSettingsType = defineType({
     defineField({name: 'siteTitle', title: 'Site Title', type: 'string', validation: (Rule) => Rule.required()}),
     defineField({name: 'legalName', title: 'Legal / Business Name', type: 'string'}),
     defineField({name: 'tagline', title: 'Brand Tagline', type: 'string'}),
+    defineField({name: 'headerMeta', title: 'Header Meta Line', type: 'string', description: 'Small line beneath the brand name in the site header. Falls back to Footer Meta Line when blank.'}),
     defineField({
       name: 'commercialPositioning',
       title: 'Commercial Positioning Statement',
@@ -35,6 +36,7 @@ export const siteSettingsType = defineType({
       })],
     }),
     defineField({name: 'footerMeta', title: 'Footer Meta Line', type: 'string'}),
+    defineField({name: 'locationLabel', title: 'Footer Location', type: 'string', description: 'Location displayed beside the established year in the footer.'}),
     defineField({name: 'footerStatement', title: 'Footer Statement', type: 'text', rows: 3}),
     defineField({name: 'footerProjectEyebrow', title: 'Footer Project Eyebrow', type: 'string'}),
     defineField({name: 'footerProjectHeading', title: 'Footer Project Heading', type: 'string'}),
