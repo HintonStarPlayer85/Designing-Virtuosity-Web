@@ -166,7 +166,7 @@ function homeDoc(){
 function extractClients(){
   const $=pages.services
   const seen=new Map()
-  $('.clients-experience .client-track').first().children('.client-chip').each((i,chip)=>{
+  $('.clients-experience .client-track .client-chip').each((i,chip)=>{
     const img=$(chip).find('img').first()
     const name=clean(img.attr('alt') || $(chip).find('.client-name').text())
     if(!name || seen.has(name.toLowerCase())) return
