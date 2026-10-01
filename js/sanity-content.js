@@ -525,10 +525,262 @@
     }
   };
 
+
+  const portfolioLevelLabel = (value) => ({
+    featured: 'Featured Project',
+    caseStudy: 'Case Study',
+    artifact: 'Portfolio Artifact',
+  }[value] || 'Portfolio Artifact');
+
+  const normalizeKey = (value = '') => String(value).trim().toLowerCase();
+
+  const projectTreatment = (project) => {
+    const parts = [];
+    if (project?.challenge) parts.push(`Challenge: ${project.challenge}`);
+    if (project?.strategy) parts.push(`Approach: ${project.strategy}`);
+    if (project?.designSystem) parts.push(`Solution: ${project.designSystem}`);
+    return parts.join(' ') || project?.portfolioTreatment || '';
+  };
+
+  const syncCaseDataset = (node, project, slugOverride) => {
+    if (!node || !project) return;
+
+    node.dataset.caseTitle = project.title || node.dataset.caseTitle || '';
+    node.dataset.caseLevel = portfolioLevelLabel(project.portfolioLevel);
+    node.dataset.caseDiscipline = project.discipline || project.cardCategoryLabel || '';
+    node.dataset.caseSummary = project.summary || project.cardCopy || '';
+    node.dataset.caseDeliverables = Array.isArray(project.deliverables)
+      ? project.deliverables.join(' · ')
+      : '';
+    node.dataset.caseTreatment = projectTreatment(project);
+
+    if (project.website) node.dataset.caseUrl = project.website;
+    else delete node.dataset.caseUrl;
+
+    if (project.legacyAccent) node.dataset.caseAccent = project.legacyAccent;
+
+    const slug = slugOverride || project.slug?.current;
+    if (slug) node.dataset.caseSlug = slug;
+  };
+
+  const applyProjectCover = (node, project, selector) => {
+    if (!node || !project?.coverImageUrl) return;
+    const visual = node.querySelector(selector);
+    if (!visual) return;
+
+    visual.style.backgroundImage = `url("${String(project.coverImageUrl).replace(/"/g, '%22')}")`;
+    visual.style.backgroundSize = 'cover';
+    visual.style.backgroundPosition = 'center';
+    visual.style.backgroundRepeat = 'no-repeat';
+
+    [...visual.children].forEach((child) => {
+      child.style.opacity = '0';
+      child.setAttribute('aria-hidden', 'true');
+    });
+  };
+
+  const applyFeaturedProjects = (projects) => {
+    const reel = document.querySelector('.feature-reel');
+    if (!reel || !Array.isArray(projects)) return;
+
+    const nodes = [...reel.querySelectorAll('.feature-project')];
+    const byTitle = new Map(nodes.map((node) => [normalizeKey(node.dataset.caseTitle), node]));
+    const used = new Set();
+
+    const featured = projects
+      .filter((project) => project.featured)
+      .sort((a, b) => (a.featuredOrder ?? 999) - (b.featuredOrder ?? 999));
+
+    featured.forEach((project, index) => {
+      const node = byTitle.get(normalizeKey(project.title)) || nodes[index];
+      if (!node || used.has(node)) return;
+      used.add(node);
+
+      syncCaseDataset(node, project);
+
+      const level = project.portfolioLevel === 'caseStudy'
+        ? 'Featured Case Study'
+        : portfolioLevelLabel(project.portfolioLevel);
+
+      text(node.querySelector('.feature-number'), `${String(index + 1).padStart(2, '0')} · ${level}`);
+      text(node.querySelector('.feature-copy .kicker'), project.cardCategoryLabel || project.discipline);
+      text(node.querySelector('.feature-copy h3'), project.title);
+      text(node.querySelector('.feature-copy p'), project.cardCopy || project.summary);
+      applyProjectCover(node, project, '.feature-visual');
+
+      node.hidden = false;
+      reel.append(node);
+    });
+
+    nodes.forEach((node) => {
+      if (!used.has(node)) node.hidden = true;
+    });
+  };
+
+  const applyPortfolioIndex = (projects) => {
+    const grid = document.querySelector('.work-index-section .work-grid');
+    if (!grid || !Array.isArray(projects)) return;
+
+    const nodes = [...grid.querySelectorAll('.work-item')];
+    const byTitle = new Map(nodes.map((node) => [normalizeKey(node.dataset.caseTitle), node]));
+    const used = new Set();
+
+    const ordered = [...projects].sort(
+      (a, b) => (a.portfolioOrder ?? 999) - (b.portfolioOrder ?? 999)
+    );
+
+    ordered.forEach((project, index) => {
+      const node = byTitle.get(normalizeKey(project.title)) || nodes[index];
+      if (!node || used.has(node)) return;
+      used.add(node);
+
+      syncCaseDataset(node, project, `${project.slug?.current || 'project'}-index`);
+      text(node.querySelector('.work-item-copy > span'), project.cardCategoryLabel || project.discipline);
+      text(node.querySelector('.work-item-copy h3'), project.title);
+      applyProjectCover(node, project, '.work-item-visual');
+
+      node.hidden = false;
+      grid.append(node);
+    });
+
+    nodes.forEach((node) => {
+      if (!used.has(node)) node.hidden = true;
+    });
+  };
+
+  const applyIdentityMarks = (marks) => {
+    const mosaic = document.querySelector('.identity-mosaic');
+    if (!mosaic || !Array.isArray(marks)) return;
+
+    const nodes = [...mosaic.querySelectorAll('.identity-tile')];
+    const byTitle = new Map(nodes.map((node) => [normalizeKey(node.dataset.caseTitle), node]));
+    const used = new Set();
+
+    const ordered = [...marks].sort(
+      (a, b) => (a.displayOrder ?? 999) - (b.displayOrder ?? 999)
+    );
+
+    ordered.forEach((mark, index) => {
+      const node = byTitle.get(normalizeKey(mark.organizationName)) || nodes[index];
+      if (!node || used.has(node)) return;
+      used.add(node);
+
+      const project = mark.relatedProject || {
+        title: mark.organizationName,
+        slug: mark.slug,
+        portfolioLevel: mark.projectType === 'Expanded Brand Project' ? 'featured' : 'artifact',
+        discipline: 'Brand Identity',
+        summary: mark.description,
+        portfolioTreatment: mark.portfolioTreatment,
+        deliverables: ['Brand identity'],
+      };
+
+      syncCaseDataset(node, project, `identity-${mark.slug?.current || index + 1}`);
+      text(node.querySelector('.identity-caption strong'), mark.organizationName);
+      text(node.querySelector('.identity-caption > span'), mark.projectType || 'Brand Identity');
+
+      const logo = node.querySelector('.identity-mark');
+      if (logo) {
+        [...logo.classList]
+          .filter((className) => className.startsWith('logo-'))
+          .forEach((className) => logo.classList.remove(className));
+
+        if (mark.logoUrl) {
+          logo.style.backgroundImage = `url("${String(mark.logoUrl).replace(/"/g, '%22')}")`;
+          logo.style.backgroundSize = 'contain';
+          logo.style.backgroundPosition = 'center';
+          logo.style.backgroundRepeat = 'no-repeat';
+        } else if (mark.legacyLogoClass) {
+          logo.style.removeProperty('background-image');
+          logo.style.removeProperty('background-size');
+          logo.style.removeProperty('background-position');
+          logo.style.removeProperty('background-repeat');
+          logo.classList.add(mark.legacyLogoClass);
+        }
+      }
+
+      node.hidden = false;
+      mosaic.append(node);
+    });
+
+    nodes.forEach((node) => {
+      if (!used.has(node)) node.hidden = true;
+    });
+  };
+
+  const applyPortfolio = (page, projects, identities) => {
+    if (!page) return;
+
+    const hero = document.querySelector('.page-hero');
+    if (hero) {
+      text(hero.querySelector('.kicker'), page.heroEyebrow);
+      text(hero.querySelector('h1.display > :first-child'), page.heroHeadingTop);
+      text(hero.querySelector('h1.display .gradient-word'), page.heroHeadingAccent);
+      text(hero.querySelector('.lede'), page.heroIntro);
+    }
+
+    const featured = document.querySelector('.wow-featured');
+    if (featured) {
+      text(featured.querySelector('.portfolio-intro-grid .kicker'), page.featuredEyebrow);
+      text(featured.querySelector('.portfolio-intro-grid .section-title'), page.featuredHeading);
+      text(featured.querySelector('.portfolio-intro-grid .lede'), page.featuredIntro);
+    }
+
+    const index = document.querySelector('.work-index-section');
+    if (index) {
+      text(index.querySelector('.work-index-head .kicker'), page.indexEyebrow);
+      text(index.querySelector('.work-index-head .section-title'), page.indexHeading);
+      text(index.querySelector('.work-index-head .lede'), page.indexIntro);
+    }
+
+    const identity = document.querySelector('.identity-archive');
+    if (identity) {
+      text(identity.querySelector('.identity-head .kicker'), page.identityEyebrow);
+      text(identity.querySelector('.identity-head .section-title'), page.identityHeading);
+      text(identity.querySelector('.identity-head .lede'), page.identityIntro);
+    }
+
+    const range = document.querySelector('.design-range');
+    if (range) {
+      text(range.querySelector('.range-head .section-title'), page.rangeHeading);
+      text(range.querySelector('.range-head p'), page.rangeIntro);
+    }
+
+    applyFeaturedProjects(projects);
+    applyPortfolioIndex(projects);
+    applyIdentityMarks(identities);
+
+    const modalHeadings = [...document.querySelectorAll('.case-modal .case-copy h3')];
+    text(modalHeadings[0], 'Project context');
+    text(modalHeadings[1], 'Challenge, approach and solution');
+    text(
+      '.case-modal .case-note',
+      'Projects are presented at the depth supported by approved assets and documented project evidence.'
+    );
+
+    const closing = document.querySelector('.cta-band');
+    if (closing) {
+      text(closing.querySelector('h2'), page.closingHeading);
+
+      let body = closing.querySelector('.cta-copy p');
+      if (!body && page.closingBody) {
+        const heading = closing.querySelector('h2');
+        if (heading) {
+          body = document.createElement('p');
+          heading.insertAdjacentElement('afterend', body);
+        }
+      }
+      text(body, page.closingBody);
+      setButton(closing.querySelector('.btn'), page.closingCta);
+    }
+  };
+
   const loadContent = async () => {
     const query = pageId === 'servicesPage'
       ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "servicesPage"][0]{..., selectedClients[]->{name,legacyLogoPath,displayOrder}}, "services": *[_type == "service"] | order(displayOrder asc){title,slug,shortDescription,valuePromise,whatWeBuild,deliverables,displayOrder}}`
-      : `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "${pageId}"][0]}`;
+      : pageId === 'portfolioPage'
+        ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "portfolioPage"][0], "projects": *[_type == "portfolioProject"] | order(coalesce(featuredOrder,999) asc, coalesce(portfolioOrder,999) asc){title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent,featured,featuredOrder,portfolioOrder,"coverImageUrl":coverImage.asset->url}, "identities": *[_type == "identityMark" && featured != false] | order(displayOrder asc){organizationName,slug,projectType,description,portfolioTreatment,legacyLogoClass,legacyAssetPath,displayOrder,"logoUrl":logo.asset->url,"relatedProject":relatedProject->{title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent}}}`
+        : `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "${pageId}"][0]}`;
     const endpoint = new URL(
       `https://${config.projectId}.apicdn.sanity.io/v${config.apiVersion}/data/query/${config.dataset}`
     );
@@ -556,7 +808,9 @@
       applyShared(payload.result.settings);
       applySeo(payload.result.page, payload.result.settings);
 
-      if (pageId === 'homePage') applyHome(payload.result.page);\n      if (pageId === 'servicesPage') applyServices(payload.result.page, payload.result.services);
+      if (pageId === 'homePage') applyHome(payload.result.page);
+      if (pageId === 'servicesPage') applyServices(payload.result.page, payload.result.services);
+      if (pageId === 'portfolioPage') applyPortfolio(payload.result.page, payload.result.projects, payload.result.identities);
 
       document.documentElement.dataset.cms = 'sanity';
       window.dispatchEvent(new CustomEvent('dv:content-ready', {
