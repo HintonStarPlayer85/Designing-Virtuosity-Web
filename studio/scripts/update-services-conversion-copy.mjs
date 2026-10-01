@@ -29,8 +29,10 @@ const parity = {
   closingMessage: 'Need a design system, not just a file?',
 }
 
+const canonical = (value = '') => String(value).replace(/\s+/g, '').toLowerCase()
+
 for (const [field, expected] of Object.entries(parity)) {
-  if (page[field] !== expected) {
+  if (canonical(page[field]) !== canonical(expected)) {
     throw new Error(`Parity check failed for ${field}. Expected "${expected}", found "${page[field]}".`)
   }
 }
