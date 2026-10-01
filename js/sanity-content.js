@@ -951,6 +951,7 @@
       replaceMetaValue(meta[2], page.projectTypesSummary);
     }
 
+    text(document.querySelector('#project-form .form-section .form-label'), page.projectTypePrompt);
     applyProjectTypeOptions(page.projectTypes);
     applyFormFields(page.formFields);
     replaceSelectOptions(document.querySelector('#budget'), page.budgetOptions);
