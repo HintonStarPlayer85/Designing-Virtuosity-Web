@@ -2,11 +2,6 @@ name: Update Sanity Services Conversion Copy
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "studio/.update-services-copy-trigger"
 
 permissions:
   contents: read
