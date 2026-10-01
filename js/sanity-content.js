@@ -360,8 +360,175 @@
     }
   };
 
+
+  const applyServicePanels = (services) => {
+    if (!Array.isArray(services)) return;
+    const nodes = [...document.querySelectorAll('.service-stack .service-panel')];
+
+    services.forEach((service, index) => {
+      const node = nodes[index];
+      if (!node) return;
+
+      const slug = service.slug?.current;
+      if (slug) node.id = slug;
+
+      text(node.querySelector('.service-button .num'), String(index + 1).padStart(2, '0'));
+      text(node.querySelector('.service-button h2'), service.title);
+
+      const body = node.querySelector('.service-content-inner p');
+      text(body, service.valuePromise || service.whatWeBuild || service.shortDescription);
+
+      const list = node.querySelector('.service-list');
+      if (list && Array.isArray(service.deliverables)) {
+        list.replaceChildren();
+        service.deliverables.forEach((deliverable) => {
+          const li = document.createElement('li');
+          li.textContent = deliverable;
+          list.append(li);
+        });
+      }
+    });
+  };
+
+  const applyProcessSteps = (items) => {
+    if (!Array.isArray(items)) return;
+    const nodes = [...document.querySelectorAll('.process-grid .process-card')];
+
+    items.forEach((item, index) => {
+      const node = nodes[index];
+      if (!node) return;
+      text(node.querySelector('span'), item.number);
+      text(node.querySelector('h3'), item.title);
+      text(node.querySelector('p'), item.description);
+    });
+  };
+
+  const applyDifferenceCards = (items) => {
+    if (!Array.isArray(items)) return;
+    const nodes = [...document.querySelectorAll('.difference-grid .difference-card')];
+
+    items.forEach((item, index) => {
+      const node = nodes[index];
+      if (!node) return;
+      text(node.querySelector('.difference-number'), item.number);
+      text(node.querySelector('h3'), item.title);
+      text(node.querySelector('p'), item.clientBenefit);
+    });
+  };
+
+  const applyFaq = (items) => {
+    if (!Array.isArray(items)) return;
+    const nodes = [...document.querySelectorAll('.faq-list .faq-item')];
+
+    items.forEach((item, index) => {
+      const node = nodes[index];
+      if (!node) return;
+      text(node.querySelector('.faq-index'), String(index + 1).padStart(2, '0'));
+      text(node.querySelector('.faq-question strong'), item.question);
+      text(node.querySelector('.faq-answer p'), item.answer);
+    });
+  };
+
+  const applySelectedClients = (clients) => {
+    if (!Array.isArray(clients) || !clients.length) return;
+
+    const rows = [...document.querySelectorAll('.client-wall .client-row')];
+    if (!rows.length) return;
+
+    const midpoint = Math.ceil(clients.length / 2);
+    const groups = [clients.slice(0, midpoint), clients.slice(midpoint)];
+
+    rows.forEach((row, rowIndex) => {
+      const group = groups[rowIndex] || [];
+      if (!group.length) return;
+
+      const track = row.querySelector('.client-track');
+      if (!track) return;
+
+      const buildChip = (client, duplicate = false) => {
+        const chip = document.createElement('div');
+        chip.className = 'client-chip';
+        if (!duplicate) chip.setAttribute('data-services-tilt', '');
+        if (duplicate) chip.setAttribute('aria-hidden', 'true');
+
+        if (client.legacyLogoPath) {
+          const img = document.createElement('img');
+          img.src = client.legacyLogoPath;
+          img.alt = duplicate ? '' : (client.name || '');
+          chip.append(img);
+        } else {
+          const span = document.createElement('span');
+          span.className = 'client-name';
+          span.textContent = client.name || '';
+          chip.append(span);
+        }
+
+        return chip;
+      };
+
+      track.replaceChildren();
+      group.forEach((client) => track.append(buildChip(client, false)));
+      group.forEach((client) => track.append(buildChip(client, true)));
+    });
+  };
+
+  const applyServices = (page, services) => {
+    if (!page) return;
+
+    const hero = document.querySelector('.page-hero');
+    if (hero) {
+      text(hero.querySelector('.kicker'), page.heroEyebrow);
+      setHeadingWithBreaks(hero.querySelector('h1.display'), page.heroHeading);
+      text(hero.querySelector('.lede'), page.heroClientValue);
+    }
+
+    applyServicePanels(services);
+
+    const process = document.querySelector('.process-grid')?.closest('.section');
+    if (process) {
+      text(process.querySelector('.section-head .kicker'), page.processEyebrow);
+      text(process.querySelector('.section-head .section-title'), page.processHeading);
+      text(process.querySelector('.section-head .lede'), page.processIntro);
+    }
+    applyProcessSteps(page.processSteps);
+
+    const experience = document.querySelector('.clients-experience');
+    if (experience) {
+      text(experience.querySelector('.clients-head .kicker'), page.experienceEyebrow);
+      text(experience.querySelector('.clients-head .section-title'), page.experienceHeading);
+      text(experience.querySelector('.clients-head .lede'), page.experienceCopy);
+    }
+    applySelectedClients(page.selectedClients);
+
+    const difference = document.querySelector('.dv-difference');
+    if (difference) {
+      text(difference.querySelector('.difference-head .kicker'), page.differenceEyebrow);
+      setHeadingWithBreaks(difference.querySelector('.difference-head .section-title'), page.differenceHeading);
+      text(difference.querySelector('.difference-intro'), page.differenceIntro);
+    }
+    applyDifferenceCards(page.differenceCards);
+
+    const faq = document.querySelector('.dv-faq');
+    if (faq) {
+      text(faq.querySelector('.faq-intro .kicker'), page.faqEyebrow);
+      setHeadingWithBreaks(faq.querySelector('.faq-intro .section-title'), page.faqHeading);
+      text(faq.querySelector('.faq-intro > p:not(.kicker)'), page.faqIntro);
+    }
+    applyFaq(page.faq);
+
+    const closing = document.querySelector('.cta-band');
+    if (closing) {
+      text(closing.querySelector('h2'), page.closingMessage);
+      const existingBody = closing.querySelector('.cta-copy p');
+      if (existingBody) text(existingBody, page.closingBody);
+      setButton(closing.querySelector('.btn'), page.closingCta);
+    }
+  };
+
   const loadContent = async () => {
-    const query = `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "${pageId}"][0]}`;
+    const query = pageId === 'servicesPage'
+      ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "servicesPage"][0]{..., selectedClients[]->{name,legacyLogoPath,displayOrder}}, "services": *[_type == "service"] | order(displayOrder asc){title,slug,shortDescription,valuePromise,whatWeBuild,deliverables,displayOrder}}`
+      : `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "${pageId}"][0]}`;
     const endpoint = new URL(
       `https://${config.projectId}.apicdn.sanity.io/v${config.apiVersion}/data/query/${config.dataset}`
     );
@@ -389,7 +556,7 @@
       applyShared(payload.result.settings);
       applySeo(payload.result.page, payload.result.settings);
 
-      if (pageId === 'homePage') applyHome(payload.result.page);
+      if (pageId === 'homePage') applyHome(payload.result.page);\n      if (pageId === 'servicesPage') applyServices(payload.result.page, payload.result.services);
 
       document.documentElement.dataset.cms = 'sanity';
       window.dispatchEvent(new CustomEvent('dv:content-ready', {
