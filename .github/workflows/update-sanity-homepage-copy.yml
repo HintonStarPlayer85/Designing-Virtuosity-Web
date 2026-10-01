@@ -2,11 +2,6 @@ name: Update Sanity Homepage Conversion Copy
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "studio/.update-homepage-copy-trigger"
 
 permissions:
   contents: read
