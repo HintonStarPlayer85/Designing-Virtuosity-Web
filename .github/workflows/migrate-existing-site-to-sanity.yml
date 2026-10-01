@@ -2,11 +2,6 @@ name: Migrate Existing Website Content to Sanity
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "studio/.migrate-existing-site-trigger"
 
 permissions:
   contents: read
