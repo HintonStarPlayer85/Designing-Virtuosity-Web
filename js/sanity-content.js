@@ -970,6 +970,26 @@
 
       if (page.successMessage) form.dataset.successMessage = page.successMessage;
       if (page.errorMessage) form.dataset.errorMessage = page.errorMessage;
+
+      const status = form.querySelector('.form-status');
+      if (status && !status.dataset.cmsMessageObserver) {
+        status.dataset.cmsMessageObserver = 'true';
+
+        const syncStatusMessage = () => {
+          let next = '';
+          if (status.classList.contains('success')) next = form.dataset.successMessage || '';
+          if (status.classList.contains('error')) next = form.dataset.errorMessage || '';
+          if (next && status.textContent !== next) status.textContent = next;
+        };
+
+        new MutationObserver(syncStatusMessage).observe(status, {
+          childList: true,
+          characterData: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+      }
     }
 
     const referral = document.querySelector('.strategic-intelligence');
