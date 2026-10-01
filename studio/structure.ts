@@ -13,6 +13,7 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       singleton(S, 'Home Page', 'homePage', 'homePage'),
       singleton(S, 'Services Page', 'servicesPage', 'servicesPage'),
+      singleton(S, 'Portfolio Page', 'portfolioPage', 'portfolioPage'),
       singleton(S, 'Contact Page', 'contactPage', 'contactPage'),
       S.divider(),
       S.documentTypeListItem('service').title('Services'),

@@ -5,20 +5,9 @@ export const siteSettingsType = defineType({
   title: 'Site Settings',
   type: 'document',
   fields: [
-    defineField({
-      name: 'siteTitle',
-      title: 'Site Title',
-      type: 'string',
-      initialValue: 'Designing Virtuosity',
-      validation: (Rule) => Rule.required(),
-    }),
+    defineField({name: 'siteTitle', title: 'Site Title', type: 'string', validation: (Rule) => Rule.required()}),
     defineField({name: 'legalName', title: 'Legal / Business Name', type: 'string'}),
-    defineField({
-      name: 'tagline',
-      title: 'Brand Tagline',
-      type: 'string',
-      description: 'Brand voice, not the full sales proposition.',
-    }),
+    defineField({name: 'tagline', title: 'Brand Tagline', type: 'string'}),
     defineField({
       name: 'commercialPositioning',
       title: 'Commercial Positioning Statement',
@@ -35,41 +24,62 @@ export const siteSettingsType = defineType({
       name: 'navigation',
       title: 'Navigation',
       type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({name: 'label', title: 'Label', type: 'string', validation: (Rule) => Rule.required()}),
-            defineField({name: 'href', title: 'Link', type: 'string', validation: (Rule) => Rule.required()}),
-            defineField({name: 'isPrimary', title: 'Primary Button', type: 'boolean', initialValue: false}),
-          ],
-          preview: {
-            select: {title: 'label', subtitle: 'href'},
-          },
-        }),
-      ],
+      of: [defineArrayMember({
+        type: 'object',
+        fields: [
+          defineField({name: 'label', title: 'Label', type: 'string'}),
+          defineField({name: 'href', title: 'Link', type: 'string'}),
+          defineField({name: 'isPrimary', title: 'Primary Button', type: 'boolean', initialValue: false}),
+        ],
+        preview: {select: {title: 'label', subtitle: 'href'}},
+      })],
     }),
-    defineField({name: 'footerHeading', title: 'Footer Heading', type: 'string'}),
+    defineField({name: 'footerMeta', title: 'Footer Meta Line', type: 'string'}),
     defineField({name: 'footerStatement', title: 'Footer Statement', type: 'text', rows: 3}),
+    defineField({name: 'footerProjectEyebrow', title: 'Footer Project Eyebrow', type: 'string'}),
+    defineField({name: 'footerProjectHeading', title: 'Footer Project Heading', type: 'string'}),
+    defineField({name: 'footerProjectAction', title: 'Footer Project Action', type: 'string'}),
+    defineField({name: 'footerProjectHref', title: 'Footer Project Link', type: 'string'}),
+    defineField({
+      name: 'footerColumns',
+      title: 'Footer Navigation Columns',
+      type: 'array',
+      of: [defineArrayMember({
+        type: 'object',
+        fields: [
+          defineField({name: 'heading', title: 'Heading', type: 'string'}),
+          defineField({
+            name: 'links',
+            title: 'Links',
+            type: 'array',
+            of: [defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({name: 'label', title: 'Label', type: 'string'}),
+                defineField({name: 'href', title: 'Link', type: 'string'}),
+              ],
+              preview: {select: {title: 'label', subtitle: 'href'}},
+            })],
+          }),
+        ],
+        preview: {select: {title: 'heading'}},
+      })],
+    }),
     defineField({
       name: 'socialLinks',
       title: 'Social / Contact Links',
       type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({name: 'label', title: 'Label', type: 'string'}),
-            defineField({name: 'platform', title: 'Platform', type: 'string'}),
-            defineField({name: 'url', title: 'URL', type: 'string'}),
-          ],
-          preview: {select: {title: 'label', subtitle: 'url'}},
-        }),
-      ],
+      of: [defineArrayMember({
+        type: 'object',
+        fields: [
+          defineField({name: 'label', title: 'Label', type: 'string'}),
+          defineField({name: 'platform', title: 'Platform', type: 'string'}),
+          defineField({name: 'url', title: 'URL', type: 'string'}),
+        ],
+        preview: {select: {title: 'label', subtitle: 'url'}},
+      })],
     }),
     defineField({name: 'defaultSeo', title: 'Default SEO', type: 'seoFields'}),
   ],
-  preview: {
-    prepare: () => ({title: 'Site Settings'}),
-  },
+  preview: {prepare: () => ({title: 'Site Settings'})},
 })
