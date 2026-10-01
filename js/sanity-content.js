@@ -235,8 +235,33 @@
 
     applyNavigation(settings);
 
+    document.querySelectorAll('.brand strong').forEach((node) => text(node, settings.siteTitle));
+    document.querySelectorAll('.brand > span:last-child').forEach((node) => text(node, settings.headerMeta || settings.footerMeta));
+    document.querySelectorAll('.footer-brand > span:last-child').forEach((node) => text(node, settings.siteTitle));
+
     text('.footer-meta', settings.footerMeta);
     text('.footer-statement', settings.footerStatement);
+
+    const footerBottom = [...document.querySelectorAll('.footer-bottom > span')];
+    if (footerBottom[0] && (settings.legalName || settings.siteTitle)) {
+      const year = document.createElement('span');
+      year.setAttribute('data-year', '');
+      year.textContent = String(new Date().getFullYear());
+      footerBottom[0].replaceChildren(
+        document.createTextNode('© '),
+        year,
+        document.createTextNode(` ${settings.legalName || settings.siteTitle}. All rights reserved.`)
+      );
+    }
+
+    if (footerBottom[1] && settings.foundedYear) {
+      const current = footerBottom[1].textContent || '';
+      const currentLocation = current.includes('·') ? current.split('·').slice(1).join('·').trim() : '';
+      const location = settings.locationLabel || currentLocation;
+      footerBottom[1].textContent = location
+        ? `Established ${settings.foundedYear} · ${location}`
+        : `Established ${settings.foundedYear}`;
+    }
 
     const projectCard = document.querySelector('.footer-project-card');
     if (projectCard) {
