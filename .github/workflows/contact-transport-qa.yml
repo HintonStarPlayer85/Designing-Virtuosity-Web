@@ -7,6 +7,8 @@ on:
     paths:
       - ".github/workflows/contact-transport-qa.yml"
       - "qa/contact-submission.spec.js"
+      - "js/contact.js"
+      - "contact.html"
 
 permissions:
   contents: read
