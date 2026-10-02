@@ -38,6 +38,19 @@ test('Services renders CMS service content', async ({ page }) => {
   const titles = await panels.locator('.service-button h2').allTextContents();
   expect(titles.every(title => title.trim().length > 0)).toBeTruthy();
 
+  const gradientWord = page.locator('.page-hero .gradient-word');
+  await expect(gradientWord).toHaveText('Six design systems.');
+  const gradientStyle = await gradientWord.evaluate((node) => {
+    const style = getComputedStyle(node);
+    return {
+      color: style.color,
+      backgroundImage: style.backgroundImage,
+      backgroundClip: style.backgroundClip || style.webkitBackgroundClip,
+    };
+  });
+  expect(gradientStyle.color).toBe('rgba(0, 0, 0, 0)');
+  expect(gradientStyle.backgroundImage).toContain('linear-gradient');
+
   const clientChips = page.locator('.client-wall .client-chip');
   expect(await clientChips.count()).toBeGreaterThan(0);
 });
