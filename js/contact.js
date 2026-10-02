@@ -21,20 +21,19 @@
     submitButton.innerHTML = 'Sending…';
     setStatus('Sending your project inquiry…');
 
-    const data = Object.fromEntries(new FormData(form).entries());
-    data._subject = 'New Designing Virtuosity Project Inquiry';
-    data._template = 'table';
-    data._replyto = data.email || '';
-    data._url = window.location.href;
+    const data = new FormData(form);
+    data.set('_subject', 'New Designing Virtuosity Project Inquiry');
+    data.set('_template', 'table');
+    data.set('_replyto', data.get('email') || '');
+    data.set('_url', window.location.href);
 
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: data
       });
 
       const result = await response.json().catch(() => ({}));
