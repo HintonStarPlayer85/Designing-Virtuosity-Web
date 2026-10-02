@@ -1,0 +1,174 @@
+name: Production QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/production-qa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    env:
+      SITE_ORIGIN: https://designingvirtuosity.com
+      WWW_ORIGIN: https://www.designingvirtuosity.com
+      SANITY_PROJECT_ID: rx0hc1vo
+      SANITY_DATASET: production
+      SANITY_API_VERSION: 2026-10-01
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate frontend JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check js/sanity-content.js
+          node --check js/main.js
+          node --check js/portfolio-experience.js
+          node --check js/contact.js
+          node --check js/power-ui.js
+
+      - name: Verify deployed pages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          check_page() {
+            local path="$1"
+            local name="$2"
+            local body
+            local status
+            body="$(mktemp)"
+
+            status="$(
+              curl -sS -L                 --retry 5                 --retry-delay 3                 --retry-all-errors                 -o "$body"                 -w "%{http_code}"                 "$SITE_ORIGIN$path"
+            )"
+
+            if [ "$status" != "200" ]; then
+              echo "::error::$name returned HTTP $status"
+              cat "$body"
+              exit 1
+            fi
+
+            grep -Fq 'js/sanity-content.js?v=20261001-8' "$body" || {
+              echo "::error::$name is not serving the current Sanity adapter version"
+              exit 1
+            }
+
+            grep -Fq 'noindex, nofollow' "$body" || {
+              echo "::error::$name no longer has the expected pre-launch noindex directive"
+              exit 1
+            }
+
+            echo "$name: HTTP 200, current Sanity adapter, noindex preserved"
+          }
+
+          check_page "/" "Home"
+          check_page "/services.html" "Services"
+          check_page "/portfolio.html" "Portfolio"
+          check_page "/contact.html" "Contact"
+
+      - name: Verify www HTTPS route
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(
+            curl -sS -L               --retry 5               --retry-delay 3               --retry-all-errors               -o /tmp/www-home.html               -w "%{http_code}"               "$WWW_ORIGIN/"
+          )"
+          test "$status" = "200"
+          grep -Fq 'Designing Virtuosity' /tmp/www-home.html
+          echo "www HTTPS route resolves successfully"
+
+      - name: Verify Sanity published content
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          endpoint="https://$SANITY_PROJECT_ID.apicdn.sanity.io/v$SANITY_API_VERSION/data/query/$SANITY_DATASET"
+          query='{
+            "settings": *[_id == "siteSettings"][0]._id,
+            "home": *[_id == "homePage"][0]._id,
+            "servicesPage": *[_id == "servicesPage"][0]._id,
+            "portfolioPage": *[_id == "portfolioPage"][0]._id,
+            "contactPage": *[_id == "contactPage"][0]._id,
+            "serviceCount": count(*[_type == "service"]),
+            "portfolioCount": count(*[_type == "portfolioProject"]),
+            "identityCount": count(*[_type == "identityMark"]),
+            "clientCount": count(*[_type == "client"])
+          }'
+
+          curl -sS --fail --get             --data-urlencode "query=$query"             "$endpoint" > /tmp/sanity.json
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const payload = JSON.parse(fs.readFileSync('/tmp/sanity.json', 'utf8'));
+          const r = payload.result || {};
+          const required = ['settings','home','servicesPage','portfolioPage','contactPage'];
+          for (const key of required) {
+            if (!r[key]) throw new Error('Missing published Sanity document: ' + key);
+          }
+          if (!(r.serviceCount > 0)) throw new Error('No published service documents found.');
+          if (!(r.portfolioCount > 0)) throw new Error('No published portfolio project documents found.');
+          if (!(r.identityCount > 0)) throw new Error('No published identity mark documents found.');
+          if (!(r.clientCount > 0)) throw new Error('No published client documents found.');
+          console.log('Published Sanity content verified:', r);
+          NODE
+
+      - name: Verify Sanity CORS for production origins
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          endpoint="https://$SANITY_PROJECT_ID.apicdn.sanity.io/v$SANITY_API_VERSION/data/query/$SANITY_DATASET"
+          query='*[_id == "siteSettings"][0]{_id}'
+
+          check_origin() {
+            local origin="$1"
+            local headers
+            local allowed
+            headers="$(mktemp)"
+
+            curl -sS --fail --get               -D "$headers"               -o /tmp/cors-body.json               -H "Origin: $origin"               --data-urlencode "query=$query"               "$endpoint"
+
+            allowed="$(awk 'BEGIN{IGNORECASE=1} /^access-control-allow-origin:/ {sub(/^[^:]+:[[:space:]]*/, ""); sub(/\r$/, ""); print; exit}' "$headers")"
+            if [ "$allowed" != "$origin" ]; then
+              echo "::error::Expected Access-Control-Allow-Origin $origin but received $allowed"
+              cat "$headers"
+              exit 1
+            fi
+
+            echo "CORS verified for $origin"
+          }
+
+          check_origin "$SITE_ORIGIN"
+          check_origin "$WWW_ORIGIN"
+
+      - name: Verify portfolio and contact production hooks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          portfolio="$(curl -sS --fail "$SITE_ORIGIN/portfolio.html")"
+          contact="$(curl -sS --fail "$SITE_ORIGIN/contact.html")"
+          adapter="$(curl -sS --fail "$SITE_ORIGIN/js/sanity-content.js?v=20261001-8")"
+
+          grep -Fq 'data-case-challenge' <<<"$portfolio"
+          grep -Fq 'data-case-approach' <<<"$portfolio"
+          grep -Fq 'data-case-solution' <<<"$portfolio"
+          grep -Fq 'data-case-gallery' <<<"$portfolio"
+
+          grep -Fq 'name="_honey"' <<<"$contact"
+          grep -Fq 'js/contact.js' <<<"$contact"
+
+          grep -Fq 'node.dataset.caseChallenge' <<<"$adapter"
+          grep -Fq '"logoUrl":logo.asset->url' <<<"$adapter"
+          grep -Fq '"gallery":gallery[]' <<<"$adapter"
+
+          echo "Portfolio case-study hooks, media hooks, and Contact safeguards verified"
