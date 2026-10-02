@@ -8,7 +8,7 @@ export const identityMarkType = defineType({
     defineField({name: 'organizationName', title: 'Organization Name', type: 'string', validation: (Rule) => Rule.required()}),
     defineField({name: 'slug', title: 'Slug', type: 'slug', options: {source: 'organizationName', maxLength: 96}, validation: (Rule) => Rule.required()}),
     defineField({name: 'client', title: 'Linked Client', type: 'reference', to: [{type: 'client'}]}),
-    defineField({name: 'logo', title: 'Logo', type: 'image', options: {hotspot: true}}),
+    defineField({name: 'logo', title: 'Logo', type: 'image', options: {hotspot: true}, description: 'Preferred Identity Archive artwork. The existing legacy identity treatment remains as fallback when no Sanity asset is supplied.'}),
     defineField({name: 'legacyAssetPath', title: 'Current Site Logo Asset', type: 'string', readOnly: true}),
     defineField({name: 'legacyLogoClass', title: 'Current Site Logo Class', type: 'string', readOnly: true}),
     defineField({
