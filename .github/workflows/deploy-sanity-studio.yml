@@ -35,6 +35,9 @@ jobs:
       - name: Install Studio dependencies
         run: npm install
 
+      - name: Finalize migration defaults
+        run: node scripts/finalize-migration-defaults.mjs
+
       - name: Allow website origins to read published content
         shell: bash
         run: |
@@ -43,7 +46,7 @@ jobs:
             if npx sanity@latest cors list --project-id "$SANITY_STUDIO_PROJECT_ID" | grep -Fq "$origin"; then
               echo "$origin is already allowed."
             else
-              npx sanity@latest cors add "$origin" --project-id "$SANITY_STUDIO_PROJECT_ID" --yes
+              npx sanity@latest cors add "$origin" --project-id "$SANITY_STUDIO_PROJECT_ID" --no-credentials --yes
             fi
           done
 
