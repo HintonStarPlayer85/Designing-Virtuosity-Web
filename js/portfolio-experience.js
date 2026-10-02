@@ -220,6 +220,8 @@
   const challengeBlock = modal?.querySelector('[data-case-block="challenge"]');
   const approachBlock = modal?.querySelector('[data-case-block="approach"]');
   const solutionBlock = modal?.querySelector('[data-case-block="solution"]');
+  const gallery = modal?.querySelector('[data-case-gallery]');
+  const galleryGrid = modal?.querySelector('[data-case-gallery-grid]');
   const link = modal?.querySelector('.case-link');
   const top = modal?.querySelector('.case-top');
   let returnFocus = null;
@@ -247,6 +249,32 @@
       solutionBlock,
       trigger.dataset.caseSolution || fallbackTreatment || 'Detailed project solution information will be added with the final approved case-study assets.'
     );
+
+    if (gallery && galleryGrid) {
+      let items = [];
+      try {
+        items = JSON.parse(trigger.dataset.caseGallery || '[]');
+      } catch {
+        items = [];
+      }
+
+      galleryGrid.replaceChildren();
+      items.filter((item) => item?.url).forEach((item) => {
+        const figure = document.createElement('figure');
+        figure.className = 'case-gallery-item';
+
+        const img = document.createElement('img');
+        img.src = item.url;
+        img.alt = item.alt || trigger.dataset.caseTitle || 'Portfolio project image';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+
+        figure.append(img);
+        galleryGrid.append(figure);
+      });
+
+      gallery.hidden = galleryGrid.childElementCount === 0;
+    }
 
     const accent = trigger.dataset.caseAccent || '#13d8ee';
     top?.style.setProperty('--ca', accent);
