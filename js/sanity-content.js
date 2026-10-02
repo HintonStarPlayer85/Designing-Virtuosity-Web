@@ -549,7 +549,29 @@
     const hero = document.querySelector('.page-hero');
     if (hero) {
       text(hero.querySelector('.kicker'), page.heroEyebrow);
-      setHeadingWithBreaks(hero.querySelector('h1.display'), page.heroHeading);
+
+      const headingNode = hero.querySelector('h1.display');
+      const heading = String(page.heroHeading || '').trim();
+
+      if (headingNode && heading) {
+        const sentenceSplit = heading.match(/^(.+?[.!?])\s+(.+)$/);
+
+        if (sentenceSplit) {
+          setDisplayHeading(headingNode, sentenceSplit[1], sentenceSplit[2]);
+        } else {
+          const existingAccent = headingNode.querySelector('.gradient-word')?.textContent?.trim() || '';
+          const accentWordCount = Math.max(1, existingAccent.split(/\s+/).filter(Boolean).length || 3);
+          const words = heading.split(/\s+/).filter(Boolean);
+          const splitAt = Math.max(1, words.length - accentWordCount);
+
+          setDisplayHeading(
+            headingNode,
+            words.slice(0, splitAt).join(' '),
+            words.slice(splitAt).join(' ')
+          );
+        }
+      }
+
       text(hero.querySelector('.lede'), page.heroClientValue);
     }
 
