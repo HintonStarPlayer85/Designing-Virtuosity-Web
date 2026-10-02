@@ -9,7 +9,7 @@ export const clientType = defineType({
     defineField({name: 'slug', title: 'Slug', type: 'slug', options: {source: 'name', maxLength: 96}, validation: (Rule) => Rule.required()}),
     defineField({name: 'sector', title: 'Sector / Industry', type: 'string'}),
     defineField({name: 'website', title: 'Website', type: 'url'}),
-    defineField({name: 'logo', title: 'Logo', type: 'image', options: {hotspot: true}}),
+    defineField({name: 'logo', title: 'Logo', type: 'image', options: {hotspot: true}, description: 'Preferred logo for the Services Selected Client Experience. The legacy site asset is used only when this field is empty.'}),
     defineField({name: 'legacyLogoPath', title: 'Current Site Logo Path', type: 'string', readOnly: true}),
     defineField({name: 'featured', title: 'Show in Selected Client Experience', type: 'boolean', initialValue: false}),
     defineField({name: 'displayOrder', title: 'Display Order', type: 'number'}),
