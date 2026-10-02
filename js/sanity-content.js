@@ -521,9 +521,10 @@
         if (!duplicate) chip.setAttribute('data-services-tilt', '');
         if (duplicate) chip.setAttribute('aria-hidden', 'true');
 
-        if (client.legacyLogoPath) {
+        const logoSrc = client.logoUrl || client.legacyLogoPath;
+        if (logoSrc) {
           const img = document.createElement('img');
-          img.src = client.legacyLogoPath;
+          img.src = logoSrc;
           img.alt = duplicate ? '' : (client.name || '');
           chip.append(img);
         } else {
@@ -1038,7 +1039,7 @@
 
   const loadContent = async () => {
     const query = pageId === 'servicesPage'
-      ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "servicesPage"][0]{..., selectedClients[]->{name,legacyLogoPath,displayOrder}}, "services": *[_type == "service"] | order(displayOrder asc){title,slug,shortDescription,valuePromise,whatWeBuild,deliverables,displayOrder}}`
+      ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "servicesPage"][0]{..., selectedClients[]->{name,legacyLogoPath,displayOrder,"logoUrl":logo.asset->url}}, "services": *[_type == "service"] | order(displayOrder asc){title,slug,shortDescription,valuePromise,whatWeBuild,deliverables,displayOrder}}`
       : pageId === 'portfolioPage'
         ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "portfolioPage"][0], "projects": *[_type == "portfolioProject"] | order(coalesce(featuredOrder,999) asc, coalesce(portfolioOrder,999) asc){title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent,featured,featuredOrder,portfolioOrder,"coverImageUrl":coverImage.asset->url}, "identities": *[_type == "identityMark" && featured != false] | order(displayOrder asc){organizationName,slug,projectType,description,portfolioTreatment,legacyLogoClass,legacyAssetPath,displayOrder,"logoUrl":logo.asset->url,"relatedProject":relatedProject->{title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent}}}`
         : `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "${pageId}"][0]}`;
