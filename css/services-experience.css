@@ -448,3 +448,160 @@
   .clients-experience::after{animation:none!important}
   .client-chip,.difference-card,.faq-item{transition:none!important}
 }
+
+
+/* -------------------------------------------------
+   SERVICES PAGE — restored chromatic section rhythm
+   Keeps the CMS content architecture intact while restoring
+   visual separation between service systems and process.
+-------------------------------------------------- */
+.services-page .services-systems{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 8% 14%,rgba(19,216,238,.14),transparent 27%),
+    radial-gradient(circle at 92% 84%,rgba(255,17,136,.10),transparent 26%),
+    linear-gradient(180deg,#f9fbff 0%,#f3f7fc 100%);
+  border-block:1px solid rgba(12,43,93,.07);
+}
+.services-page .services-systems::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--sx-cyan),var(--sx-green),var(--sx-orange),var(--sx-pink),var(--sx-violet));
+  opacity:.72;
+}
+.services-page .service-stack{position:relative;z-index:2}
+.services-page .service-panel{
+  --svc-a:var(--sx-cyan);
+  --svc-b:var(--sx-blue);
+  position:relative;
+  border-color:color-mix(in srgb,var(--svc-a) 14%,rgba(12,43,93,.11));
+  background:
+    radial-gradient(circle at 94% 16%,color-mix(in srgb,var(--svc-a) 8%,transparent),transparent 24%),
+    linear-gradient(145deg,rgba(255,255,255,.99),rgba(248,250,254,.97));
+  box-shadow:0 14px 42px rgba(12,43,93,.055);
+  transition:border-color .3s,box-shadow .35s,transform .35s var(--sx-ease),background .35s;
+}
+.services-page .service-panel:nth-child(2){--svc-a:var(--sx-blue);--svc-b:var(--sx-violet)}
+.services-page .service-panel:nth-child(3){--svc-a:var(--sx-violet);--svc-b:var(--sx-pink)}
+.services-page .service-panel:nth-child(4){--svc-a:var(--sx-orange);--svc-b:var(--sx-pink)}
+.services-page .service-panel:nth-child(5){--svc-a:var(--sx-pink);--svc-b:var(--sx-violet)}
+.services-page .service-panel:nth-child(6){--svc-a:var(--sx-green);--svc-b:var(--sx-cyan)}
+.services-page .service-panel::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:4px;
+  background:linear-gradient(180deg,var(--svc-a),var(--svc-b));
+  opacity:.76;
+  transition:width .3s var(--sx-ease),opacity .3s;
+}
+.services-page .service-panel:hover{
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb,var(--svc-a) 28%,rgba(12,43,93,.12));
+  box-shadow:0 22px 55px rgba(12,43,93,.09),0 0 34px color-mix(in srgb,var(--svc-a) 5%,transparent);
+}
+.services-page .service-panel.open{
+  border-color:color-mix(in srgb,var(--svc-a) 34%,rgba(12,43,93,.12));
+  background:
+    radial-gradient(circle at 92% 12%,color-mix(in srgb,var(--svc-a) 13%,transparent),transparent 28%),
+    linear-gradient(145deg,#fff,#f7f9fd);
+  box-shadow:0 24px 62px rgba(12,43,93,.10),0 0 42px color-mix(in srgb,var(--svc-a) 7%,transparent);
+}
+.services-page .service-panel.open::before{width:6px;opacity:1}
+.services-page .service-button .num{color:var(--svc-a)}
+.services-page .service-toggle{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  border:1px solid color-mix(in srgb,var(--svc-a) 28%,rgba(12,43,93,.10));
+  border-radius:50%;
+  color:color-mix(in srgb,var(--svc-a) 74%,var(--sx-navy));
+  background:color-mix(in srgb,var(--svc-a) 5%,#fff);
+}
+.services-page .service-panel.open .service-toggle{
+  background:color-mix(in srgb,var(--svc-a) 10%,#fff);
+}
+.services-page .service-list li{
+  border-color:color-mix(in srgb,var(--svc-a) 16%,rgba(12,43,93,.11));
+}
+
+/* Process gets its own visual field instead of blending into the service list. */
+.services-page .services-process{
+  position:relative;
+  overflow:hidden;
+  padding-top:clamp(84px,9vw,118px);
+  background:
+    radial-gradient(circle at 86% 16%,rgba(139,76,255,.10),transparent 26%),
+    radial-gradient(circle at 8% 90%,rgba(115,229,45,.08),transparent 24%),
+    linear-gradient(180deg,#ffffff 0%,#f7f9fd 100%);
+  border-bottom:1px solid rgba(12,43,93,.08);
+}
+.services-page .services-process::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--sx-cyan),var(--sx-violet),var(--sx-pink),transparent);
+  opacity:.55;
+}
+.services-page .services-process .container{position:relative;z-index:2}
+.services-page .services-process .kicker{color:var(--sx-violet)}
+.services-page .process-card{
+  --pc-a:var(--sx-cyan);
+  --pc-b:var(--sx-blue);
+  position:relative;
+  overflow:hidden;
+  border-color:color-mix(in srgb,var(--pc-a) 14%,rgba(12,43,93,.11));
+  background:
+    radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--pc-a) 10%,transparent),transparent 28%),
+    linear-gradient(145deg,#fff,#f8faff);
+  box-shadow:0 16px 44px rgba(12,43,93,.06);
+  transition:transform .38s var(--sx-ease),box-shadow .3s,border-color .3s;
+}
+.services-page .process-card:nth-child(2){--pc-a:var(--sx-violet);--pc-b:var(--sx-pink)}
+.services-page .process-card:nth-child(3){--pc-a:var(--sx-green);--pc-b:var(--sx-cyan)}
+.services-page .process-card:nth-child(4){--pc-a:var(--sx-orange);--pc-b:var(--sx-pink)}
+.services-page .process-card::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:4px;
+  background:linear-gradient(90deg,var(--pc-a),var(--pc-b));
+}
+.services-page .process-card:hover{
+  transform:translateY(-6px);
+  border-color:color-mix(in srgb,var(--pc-a) 30%,rgba(12,43,93,.11));
+  box-shadow:0 26px 62px rgba(12,43,93,.11),0 0 34px color-mix(in srgb,var(--pc-a) 6%,transparent);
+}
+.services-page .process-card span{color:var(--pc-a)}
+.services-page .process-card h3{color:var(--sx-navy)}
+
+/* Increase chromatic definition in the light "Difference" section. */
+.services-page .dv-difference::after{
+  content:"";
+  position:absolute;
+  width:620px;height:620px;border-radius:50%;
+  right:-390px;top:-120px;
+  background:radial-gradient(circle,rgba(255,17,136,.09),rgba(255,17,136,0) 68%);
+  pointer-events:none;
+}
+.services-page .difference-head,
+.services-page .difference-grid{position:relative;z-index:2}
+.services-page .difference-card{
+  background:
+    radial-gradient(circle at var(--gx,82%) var(--gy,16%),color-mix(in srgb,var(--a) 21%,transparent),transparent 30%),
+    linear-gradient(150deg,#fff,#f5f7fb);
+}
+
+/* Keep FAQ-to-CTA handoff tight; no unstyled gap between sections. */
+.services-page .dv-faq{margin-bottom:0}
+.services-page .cta-band{margin-top:0}
+
+@media(max-width:680px){
+  .services-page .services-process{padding-top:78px}
+  .services-page .service-panel::before{width:3px}
+  .services-page .service-panel.open::before{width:4px}
+  .services-page .service-toggle{width:34px;height:34px}
+}
