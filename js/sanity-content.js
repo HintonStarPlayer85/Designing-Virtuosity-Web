@@ -628,6 +628,11 @@
     node.dataset.caseApproach = project.strategy || '';
     node.dataset.caseSolution = project.designSystem || '';
     node.dataset.caseTreatment = project.portfolioTreatment || projectTreatment(project);
+    node.dataset.caseGallery = JSON.stringify(
+      Array.isArray(project.gallery)
+        ? project.gallery.filter((item) => item?.url).map((item) => ({url: item.url, alt: item.alt || project.title || 'Portfolio project image'}))
+        : []
+    );
 
     if (project.website) node.dataset.caseUrl = project.website;
     else delete node.dataset.caseUrl;
@@ -1041,7 +1046,7 @@
     const query = pageId === 'servicesPage'
       ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "servicesPage"][0]{..., selectedClients[]->{name,legacyLogoPath,displayOrder,"logoUrl":logo.asset->url}}, "services": *[_type == "service"] | order(displayOrder asc){title,slug,shortDescription,valuePromise,whatWeBuild,deliverables,displayOrder}}`
       : pageId === 'portfolioPage'
-        ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "portfolioPage"][0], "projects": *[_type == "portfolioProject"] | order(coalesce(featuredOrder,999) asc, coalesce(portfolioOrder,999) asc){title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent,featured,featuredOrder,portfolioOrder,"coverImageUrl":coverImage.asset->url}, "identities": *[_type == "identityMark" && featured != false] | order(displayOrder asc){organizationName,slug,projectType,description,portfolioTreatment,legacyLogoClass,legacyAssetPath,displayOrder,"logoUrl":logo.asset->url,"relatedProject":relatedProject->{title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent}}}`
+        ? `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "portfolioPage"][0], "projects": *[_type == "portfolioProject"] | order(coalesce(featuredOrder,999) asc, coalesce(portfolioOrder,999) asc){title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent,featured,featuredOrder,portfolioOrder,"coverImageUrl":coverImage.asset->url,"gallery":gallery[]{"url":asset->url,alt}}, "identities": *[_type == "identityMark" && featured != false] | order(displayOrder asc){organizationName,slug,projectType,description,portfolioTreatment,legacyLogoClass,legacyAssetPath,displayOrder,"logoUrl":logo.asset->url,"relatedProject":relatedProject->{title,slug,discipline,cardCategoryLabel,cardCopy,portfolioLevel,summary,challenge,strategy,designSystem,portfolioTreatment,deliverables,website,legacyAccent,"gallery":gallery[]{"url":asset->url,alt}}}}`
         : `{"settings": *[_id == "siteSettings"][0], "page": *[_id == "${pageId}"][0]}`;
     const endpoint = new URL(
       `https://${config.projectId}.apicdn.sanity.io/v${config.apiVersion}/data/query/${config.dataset}`
